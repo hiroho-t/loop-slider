@@ -1,178 +1,172 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ループスライダー</title>
-  <meta name="description" content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。" />
-  
-  <!-- OGP Settings -->
-  <meta property="og:title" content="ループスライダー" />
-  <meta property="og:description" content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。" />
-  <meta property="og:url" content="https://hiroho-t.github.io/" />
-  <meta property="og:site_name" content="ループスライダー" />
-  <meta property="og:locale" content="ja_JP" />
-  <meta property="og:image" content="https://hiroho-t.github.io/ogp.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="ループスライダー" />
-  <meta property="og:type" content="website" />
-  
-  <!-- Twitter Card Settings -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="ループスライダー" />
-  <meta name="twitter:description" content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。" />
-  <meta name="twitter:image" content="https://hiroho-t.github.io/ogp.png" />
-  
-  <!-- Icons -->
-  <link rel="icon" href="/favicon.png" />
-  <link rel="apple-touch-icon" href="/favicon.png" />
-  
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- Styles -->
-  <link rel="stylesheet" href="styles.css">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ループスライダー</title>
+    <meta
+      name="description"
+      content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。"
+    />
 
-<body>
-  <div class="container">
-    <!-- Header -->
-    <header class="header">
-      <div class="header-nav">
-        <h1 class="header-title">
-          <a href="https://hiroho-t.github.io/" class="header-link">ループスライダー</a>
-        </h1>
-      </div>
-      <div class="header-content">
-        <p class="header-tagline">ループアニメーションの「埋め込みコード」を作成</p>
-      </div>
-    </header>
+    <!-- OGP Settings -->
+    <meta property="og:title" content="ループスライダー" />
+    <meta
+      property="og:description"
+      content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。"
+    />
+    <meta property="og:url" content="https://hiroho-t.github.io/" />
+    <meta property="og:site_name" content="ループスライダー" />
+    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:image" content="https://hiroho-t.github.io/ogp.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="ループスライダー" />
+    <meta property="og:type" content="website" />
 
-    <!-- Main Content -->
-    <main class="main">
-      <div class="main-content">
-        <div class="form-section">
-          <!-- URL Input Area -->
-          <div class="url-input-area">
-            <form class="form-container">
-              <div class="text-field">
-                <div class="input-container">
-                  <input
-                    aria-invalid="false"
-                    id="imageUrlInput"
-                    placeholder="https://example.com/image.svg"
-                    type="text"
-                    aria-label="画像URL入力欄"
-                    class="input"
-                  />
-                  <fieldset aria-hidden="true" class="input-outline">
-                    <legend><span></span></legend>
-                  </fieldset>
-                </div>
-              </div>
-              <button
-                class="button"
-                type="button"
-                id="loadImageBtn"
-                aria-label="画像を読み込み"
-              >
-                画像を読み込み
-              </button>
-            </form>
-            <div id="errorMessage" class="error-message"></div>
-          </div>
+    <!-- Twitter Card Settings -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ループスライダー" />
+    <meta
+      name="twitter:description"
+      content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。"
+    />
+    <meta name="twitter:image" content="https://hiroho-t.github.io/ogp.png" />
 
-          <!-- Settings -->
-          <div class="settings">
-            <div class="setting-group">
-              <h2 class="setting-title">ループ速度</h2>
-              <div class="slider-container">
-                <span class="slider">
-                  <span class="slider-rail"></span>
-                  <span class="slider-track"></span>
-                  <span class="slider-thumb">
+    <!-- Icons -->
+    <link rel="icon" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-nav">
+          <h1 class="header-title">
+            <a href="https://hiroho-t.github.io/" class="header-link">ループスライダー</a>
+          </h1>
+        </div>
+        <div class="header-content">
+          <p class="header-tagline">ループアニメーションの「埋め込みコード」を作成</p>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="main">
+        <div class="main-content">
+          <div class="form-section">
+            <!-- URL Input Area -->
+            <div class="url-input-area">
+              <form class="form-container">
+                <div class="text-field">
+                  <div class="input-container">
                     <input
-                      data-index="0"
-                      aria-label="ループ速度"
-                      aria-valuenow="25"
-                      aria-orientation="horizontal"
-                      aria-valuemax="50"
-                      aria-valuemin="1"
+                      aria-invalid="false"
+                      id="imageUrlInput"
+                      placeholder="https://example.com/image.svg"
+                      type="text"
+                      aria-label="画像URL入力欄"
+                      class="input"
+                    />
+                  </div>
+                </div>
+                <button class="button" type="button" id="loadImageBtn" aria-label="画像を読み込み">
+                  画像を読み込み
+                </button>
+              </form>
+              <div id="errorMessage" class="error-message"></div>
+            </div>
+
+            <!-- Settings -->
+            <div class="settings">
+              <div class="setting-group">
+                <h2 class="setting-title">ループ速度</h2>
+                <div class="slider-container">
+                  <div class="slider-wrapper">
+                    <input
                       type="range"
                       min="1"
                       max="50"
                       step="1"
-                      id="speedSlider"
-                      class="slider-input"
                       value="25"
+                      id="speedSlider"
+                      class="speed-slider"
+                      aria-label="ループ速度"
                     />
-                  </span>
-                </span>
-                <p class="slider-value" id="speedValue">やや遅い</p>
+                  </div>
+                  <p class="slider-value" id="speedValue">やや遅い</p>
+                </div>
               </div>
-            </div>
 
-            <div class="setting-group">
-              <h2 class="setting-title">画像の横幅</h2>
-              <div class="width-input-container">
-                <div class="text-field width-input-field" aria-label="画像の横幅">
-                  <label class="input-label" for="widthInput" id="widthInput-label">横幅 (px)</label>
-                  <div class="input-container">
-                    <input
-                      aria-invalid="false"
-                      id="widthInput"
-                      type="number"
-                      min="100"
-                      max="1000"
-                      class="input width-input"
-                      value="300"
-                    />
-                    <div class="input-adornment">
-                      <p class="input-adornment-text">px</p>
+              <div class="setting-group">
+                <h2 class="setting-title">画像の横幅</h2>
+                <div class="width-input-container">
+                  <div class="text-field width-input-field" aria-label="画像の横幅">
+                    <div class="input-container">
+                      <input
+                        aria-invalid="false"
+                        id="widthInput"
+                        type="number"
+                        min="100"
+                        max="1000"
+                        class="input width-input"
+                        value="300"
+                      />
+                      <div class="input-adornment">
+                        <p class="input-adornment-text">px</p>
+                      </div>
                     </div>
-                    <fieldset aria-hidden="true" class="input-outline">
-                      <legend><span>横幅 (px)</span></legend>
-                    </fieldset>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </main>
+        <!-- Carousel Container -->
+        <div class="carousel-container" id="carouselContainer" style="display: none">
+          <div class="carousel-wrapper">
+            <div class="carousel-track" id="carouselTrack"></div>
+          </div>
+        </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="footer-links">
-        <a class="footer-link" href="https://startwith.studio.site/" target="_blank" rel="noopener noreferrer">運営会社</a>
-      </div>
-      <p class="footer-copyright">© StartWith Inc.</p>
-    </footer>
-  </div>
+        <!-- Embed Section -->
+        <div class="embed-section" id="embedSection" style="display: none">
+          <div class="embed-container">
+            <div class="embed-title">📋 iframe埋め込みコード</div>
+            <div class="embed-code" id="embedCode"></div>
+            <button class="copy-btn" id="copyBtn" onclick="copyEmbedCode()">コードをコピー</button>
+          </div>
+        </div>
+      </main>
 
-  <!-- Carousel Container -->
-  <div class="carousel-container" id="carouselContainer" style="display: none">
-    <div class="carousel-wrapper">
-      <div class="carousel-track" id="carouselTrack"></div>
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="footer-links">
+          <a
+            class="footer-link"
+            href="https://startwith.studio.site/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >運営会社</a
+          >
+        </div>
+        <p class="footer-copyright">© StartWith Inc.</p>
+      </footer>
     </div>
-  </div>
 
-  <!-- Embed Section -->
-  <div class="embed-section" id="embedSection" style="display: none">
-    <div class="embed-container">
-      <div class="embed-title">📋 iframe埋め込みコード</div>
-      <div class="embed-code" id="embedCode"></div>
-      <button class="copy-btn" id="copyBtn" onclick="copyEmbedCode()">
-        コードをコピー
-      </button>
-    </div>
-  </div>
-
-  <!-- Scripts -->
-  <script src="script.js"></script>
-</body>
+    <!-- Scripts -->
+    <script src="script.js"></script>
+  </body>
 </html>

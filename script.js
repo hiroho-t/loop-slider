@@ -60,6 +60,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // Speed slider events
   speedSlider.addEventListener("input", (e) => {
     animationSpeed = parseInt(e.target.value);
+    console.log("Speed changed to:", animationSpeed); // Debug
     updateSpeedLabel();
     if (uploadedImages.length > 0) {
       startAnimation();
@@ -69,6 +70,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Initialize
   updateCarousel();
+  updateSpeedLabel();
 });
 
 // Load image from URL
@@ -230,33 +232,54 @@ body { background: transparent; height: 100vh; display: flex; align-items: cente
 // Copy embed code
 function copyEmbedCode() {
   const embedCode = document.getElementById("embedCode").textContent;
-  navigator.clipboard.writeText(embedCode).then(() => {
-    const copyBtn = document.getElementById("copyBtn");
-    const originalText = copyBtn.textContent;
-    copyBtn.textContent = "コピー完了！";
-    copyBtn.classList.add("copied");
-    setTimeout(() => {
-      copyBtn.textContent = originalText;
-      copyBtn.classList.remove("copied");
-    }, 2000);
-  }).catch(() => {
-    // Fallback for older browsers
+  const copyBtn = document.getElementById("copyBtn");
+  const originalText = copyBtn.textContent;
+  
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(embedCode).then(() => {
+      copyBtn.textContent = "コピー完了！";
+      copyBtn.classList.add("copied");
+      setTimeout(() => {
+        copyBtn.textContent = originalText;
+        copyBtn.classList.remove("copied");
+      }, 2000);
+    }).catch(() => {
+      // Show error message
+      copyBtn.textContent = "コピーに失敗しました";
+      setTimeout(() => {
+        copyBtn.textContent = originalText;
+      }, 2000);
+    });
+  } else {
+    // Fallback: Create a temporary text area for selection
     const textArea = document.createElement("textarea");
     textArea.value = embedCode;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
     document.body.appendChild(textArea);
+    textArea.focus();
     textArea.select();
-    document.execCommand('copy');
+    
+    try {
+      const successful = document.execCommand('copy');
+      if (successful) {
+        copyBtn.textContent = "コピー完了！";
+        copyBtn.classList.add("copied");
+      } else {
+        copyBtn.textContent = "手動でコピーしてください";
+      }
+    } catch (err) {
+      copyBtn.textContent = "手動でコピーしてください";
+    }
+    
     document.body.removeChild(textArea);
     
-    const copyBtn = document.getElementById("copyBtn");
-    const originalText = copyBtn.textContent;
-    copyBtn.textContent = "コピー完了！";
-    copyBtn.classList.add("copied");
     setTimeout(() => {
       copyBtn.textContent = originalText;
       copyBtn.classList.remove("copied");
     }, 2000);
-  });
+  }
 }
 
 // Start animation
