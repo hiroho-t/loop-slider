@@ -204,6 +204,7 @@ body {
   border-radius: 8px;
   text-transform: none;
   font-weight: 600;
+  outline: none;
 }
 
 .button:hover {

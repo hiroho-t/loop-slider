@@ -1,15 +1,17 @@
 {
   "name": "loop-slider",
   "version": "1.0.0",
-  "description": "ループスライダー - 画像をアップロードして、ループアニメーションを作成するWebアプリケーション",
+  "description": "ループスライダー - 画像URLから、ループアニメーションの埋め込みコードを作成するWebアプリケーション",
   "main": "index.html",
-  "scripts": {
-    "deploy": "gh-pages -d ."
-  },
-  "devDependencies": {
-    "gh-pages": "^6.3.0"
-  },
-  "keywords": ["carousel", "slider", "animation", "loop"],
+  "keywords": [
+    "carousel",
+    "slider",
+    "animation",
+    "loop",
+    "embed",
+    "iframe"
+  ],
   "author": "hiroho-t",
-  "license": "MIT"
+  "license": "MIT",
+  "homepage": "https://hiroho-t.github.io/"
 }
