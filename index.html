@@ -1,700 +1,178 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ループスライダー</title>
-    <meta name="description" content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。" />
-    
-    <!-- OGP Settings -->
-    <meta property="og:title" content="ループスライダー" />
-    <meta property="og:description" content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。" />
-    <meta property="og:url" content="https://hiroho-t.github.io/" />
-    <meta property="og:site_name" content="ループスライダー" />
-    <meta property="og:locale" content="ja_JP" />
-    <meta property="og:image" content="https://hiroho-t.github.io/ogp.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="ループスライダー" />
-    <meta property="og:type" content="website" />
-    
-    <!-- Twitter Card Settings -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="ループスライダー" />
-    <meta name="twitter:description" content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。" />
-    <meta name="twitter:image" content="https://hiroho-t.github.io/ogp.png" />
-    
-    <!-- Icons -->
-    <link rel="icon" href="/favicon.png" />
-    <link rel="apple-touch-icon" href="/favicon.png" />
-    
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        padding: 20px;
-      }
-
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-      }
-
-      .header {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        color: white;
-        padding: 30px;
-        text-align: center;
-      }
-
-      .header h1 {
-        font-size: 2.5rem;
-        margin-bottom: 10px;
-        font-weight: 700;
-      }
-
-      .header p {
-        font-size: 1.1rem;
-        opacity: 0.9;
-      }
-
-      .controls {
-        padding: 30px;
-        background: #f8f9fa;
-        border-bottom: 1px solid #e9ecef;
-      }
-
-      .url-input-area {
-        border: 3px solid #4facfe;
-        border-radius: 15px;
-        padding: 40px;
-        text-align: center;
-        background: white;
-        margin-bottom: 30px;
-        transition: all 0.3s ease;
-      }
-
-      .url-input {
-        width: 100%;
-        max-width: 500px;
-        padding: 15px 20px;
-        border: 2px solid #e9ecef;
-        border-radius: 10px;
-        font-size: 1rem;
-        margin: 20px 0 15px 0;
-        transition: all 0.3s ease;
-      }
-
-      .url-input:focus {
-        outline: none;
-        border-color: #4facfe;
-        box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
-      }
-
-      .load-btn {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        color: white;
-        border: none;
-        padding: 15px 30px;
-        border-radius: 10px;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-
-      .load-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
-      }
-
-      .load-btn:disabled {
-        background: #ccc;
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-      }
-
-      .error-message {
-        color: #ff4757;
-        font-size: 0.9rem;
-        margin-top: 10px;
-        padding: 10px;
-        background: rgba(255, 71, 87, 0.1);
-        border-radius: 5px;
-      }
-
-      .upload-text {
-        font-size: 1.2rem;
-        color: #666;
-        margin-bottom: 10px;
-      }
-
-      .upload-subtext {
-        color: #999;
-        font-size: 0.9rem;
-      }
-
-      .settings {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 30px;
-        margin-top: 20px;
-      }
-
-      .setting-group {
-        background: white;
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        width: 100%;
-        margin: 0 auto;
-      }
-
-      .setting-label {
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 15px;
-        font-size: 1.1rem;
-      }
-
-      .slider-container {
-        position: relative;
-      }
-
-      .slider {
-        width: 100%;
-        height: 8px;
-        border-radius: 4px;
-        background: #e9ecef;
-        outline: none;
-        -webkit-appearance: none;
-        margin-bottom: 10px;
-      }
-
-      .slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        cursor: pointer;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-      }
-
-      .slider::-moz-range-thumb {
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        cursor: pointer;
-        border: none;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-      }
-
-      .slider-value {
-        text-align: center;
-        font-weight: 600;
-        color: #4facfe;
-        font-size: 1.1rem;
-      }
-
-      .height-input-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-      }
-
-      .height-input {
-        width: 100px;
-        padding: 12px 15px;
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        font-size: 1rem;
-        text-align: center;
-        transition: all 0.3s ease;
-      }
-
-      .height-input:focus {
-        outline: none;
-        border-color: #4facfe;
-        box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
-      }
-
-      .height-unit {
-        font-weight: 600;
-        color: #666;
-        font-size: 1rem;
-      }
-
-      .carousel-container {
-        position: relative;
-        width: 100vw;
-        left: 50%;
-        right: 50%;
-        margin-left: -50vw;
-        margin-right: -50vw;
-        padding: 50px 0;
-        background: #f8f9fa;
-      }
-
-      .embed-section {
-        padding: 30px;
-        background: #f8f9fa;
-        border-top: 1px solid #e9ecef;
-      }
-
-      .embed-container {
-        background: white;
-        border-radius: 15px;
-        padding: 25px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-      }
-
-      .embed-title {
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 15px;
-        font-size: 1.1rem;
-      }
-
-      .embed-code {
-        background: #f8f9fa;
-        border: 1px solid #e9ecef;
-        border-radius: 8px;
-        padding: 15px;
-        font-family: "Courier New", monospace;
-        font-size: 0.9rem;
-        color: #666;
-        white-space: pre-wrap;
-        word-break: break-all;
-        max-height: 200px;
-        overflow-y: auto;
-        margin-bottom: 15px;
-      }
-
-      .copy-btn {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        color: white;
-        border: none;
-        padding: 12px 24px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.3s ease;
-      }
-
-      .copy-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
-      }
-
-      .copy-btn.copied {
-        background: #28a745;
-      }
-
-      .carousel-wrapper {
-        overflow: hidden;
-        height: 300px;
-        width: 100%;
-        max-width: none;
-        position: relative;
-        display: flex;
-        align-items: center;
-        padding: 40px 0;
-        margin: 0 auto;
-      }
-
-      .carousel-track {
-        display: flex;
-        height: 220px;
-        align-items: center;
-        transition: none;
-      }
-
-      .carousel-item {
-        flex-shrink: 0;
-        height: 100%;
-        margin: 0;
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-        border-radius: 10px;
-      }
-
-      .no-images {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        color: #999;
-        font-size: 1.2rem;
-      }
-
-      small {
-        text-align: center;
-        display: block;
-        color: #fff;
-        font-size: 12px;
-        opacity: 0.5;
-        margin-top: 24px;
-      }
-
-      @media (max-width: 768px) {
-        .settings {
-          grid-template-columns: 1fr;
-        }
-
-        .header h1 {
-          font-size: 2rem;
-        }
-
-        .controls {
-          padding: 20px;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="header">
-        <h1>ループスライダー</h1>
-        <p>ループアニメーションの「埋め込みコード」を作成</p>
-      </div>
-
-      <div class="controls">
-        <div class="url-input-area">
-          <div class="upload-text">画像URLを入力してください</div>
-          <div class="upload-subtext">対応形式: PNG, JPG, SVG, GIF</div>
-          <input
-            type="url"
-            id="imageUrlInput"
-            placeholder="https://example.com/image.svg"
-            class="url-input"
-          />
-          <button id="loadImageBtn" class="load-btn">画像を読み込み</button>
-          <div
-            id="errorMessage"
-            class="error-message"
-            style="display: none"
-          ></div>
-        </div>
-
-        <div class="settings">
-          <div class="setting-group">
-            <div class="setting-label">ループ速度</div>
-            <div class="slider-container">
-              <input
-                type="range"
-                class="slider"
-                id="speedSlider"
-                min="1"
-                max="50"
-                value="25"
-              />
-              <div class="slider-value" id="speedValue">普通</div>
-            </div>
-          </div>
-          <div class="setting-group">
-            <div class="setting-label">画像の横幅 (px)</div>
-            <div class="height-input-container">
-              <input
-                type="number"
-                id="widthInput"
-                min="100"
-                max="1000"
-                value="300"
-                class="height-input"
-              />
-              <span class="height-unit">px</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div
-        class="carousel-container"
-        id="carouselContainer"
-        style="display: none"
-      >
-        <div class="carousel-wrapper">
-          <div class="carousel-track" id="carouselTrack"></div>
-        </div>
-      </div>
-
-      <div class="embed-section" id="embedSection" style="display: none">
-        <div class="embed-container">
-          <div class="embed-title">📋 iframe埋め込みコード</div>
-          <div class="embed-code" id="embedCode"></div>
-          <button class="copy-btn" id="copyBtn" onclick="copyEmbedCode()">
-            コードをコピー
-          </button>
-        </div>
-      </div>
-    </div>
-    <small>© StartWith Inc.</small>
-
-    <script>
-      let uploadedImages = [];
-      let animationSpeed = 25;
-      let imageWidth = 300;
-
-      const imageUrlInput = document.getElementById("imageUrlInput");
-      const loadImageBtn = document.getElementById("loadImageBtn");
-      const errorMessage = document.getElementById("errorMessage");
-      const carouselTrack = document.getElementById("carouselTrack");
-      const carouselContainer = document.getElementById("carouselContainer");
-      const speedSlider = document.getElementById("speedSlider");
-      const speedValue = document.getElementById("speedValue");
-      const widthInput = document.getElementById("widthInput");
-
-      // 画像読み込みボタンのイベント
-      loadImageBtn.addEventListener("click", loadImageFromUrl);
-
-      // Enterキーでも読み込み
-      imageUrlInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-          loadImageFromUrl();
-        }
-      });
-
-      // URL入力時のエラーメッセージクリア
-      imageUrlInput.addEventListener("input", () => {
-        errorMessage.style.display = "none";
-      });
-
-      // 横幅変更イベント
-      widthInput.addEventListener("input", (e) => {
-        imageWidth = parseInt(e.target.value) || 300;
-        if (uploadedImages.length > 0) {
-          updateCarouselWidth();
-          generateEmbedCode();
-        }
-      });
-
-      // URLから画像を読み込み
-      function loadImageFromUrl() {
-        const url = imageUrlInput.value.trim();
-
-        if (!url) {
-          showError("URLを入力してください");
-          return;
-        }
-
-        if (!isValidUrl(url)) {
-          showError("有効なURLを入力してください");
-          return;
-        }
-
-        loadImageBtn.disabled = true;
-        loadImageBtn.textContent = "読み込み中...";
-        errorMessage.style.display = "none";
-
-        // 画像の読み込みテスト
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-
-        img.onload = () => {
-          // 既存の画像をクリア
-          uploadedImages = [];
-
-          const imageData = {
-            id: Date.now() + Math.random(),
-            src: url,
-            name: "URL画像",
-          };
-          uploadedImages.push(imageData);
-          updateCarousel();
-
-          loadImageBtn.disabled = false;
-          loadImageBtn.textContent = "画像を読み込み";
-        };
-
-        img.onerror = () => {
-          showError("画像の読み込みに失敗しました。URLを確認してください。");
-          loadImageBtn.disabled = false;
-          loadImageBtn.textContent = "画像を読み込み";
-        };
-
-        img.src = url;
-      }
-
-      // エラーメッセージ表示
-      function showError(message) {
-        errorMessage.textContent = message;
-        errorMessage.style.display = "block";
-      }
-
-      // URL検証
-      function isValidUrl(string) {
-        try {
-          new URL(string);
-          return true;
-        } catch (_) {
-          return false;
-        }
-      }
-
-      // カルーセル更新
-      function updateCarousel() {
-        if (uploadedImages.length === 0) {
-          carouselContainer.style.display = "none";
-          stopAnimation();
-          document.getElementById("embedSection").style.display = "none";
-          return;
-        }
-
-        // カルーセルエリアを表示
-        carouselContainer.style.display = "block";
-
-        // 画像を十分な数だけ繰り返し配置（スムーズなループのため）
-        let carouselHTML = "";
-        const repeatCount = 20; // 十分な数を繰り返し
-
-        for (let i = 0; i < repeatCount; i++) {
-          uploadedImages.forEach((image) => {
-            carouselHTML += `
-                        <div class="carousel-item" style="background-image: url('${image.src}'); width: ${imageWidth}px;">
-                        </div>
-                    `;
-          });
-        }
-
-        carouselTrack.innerHTML = carouselHTML;
-        startAnimation();
-        generateEmbedCode();
-      }
-
-      // カルーセルの横幅更新
-      function updateCarouselWidth() {
-        const items = carouselTrack.querySelectorAll(".carousel-item");
-        items.forEach((item) => {
-          item.style.width = imageWidth + "px";
-        });
-      }
-
-      // 埋め込みコード生成
-      function generateEmbedCode() {
-        if (uploadedImages.length === 0) return;
-
-        const image = uploadedImages[0];
-        const duration = (51 - animationSpeed) * 2000;
-
-        const embedHTML = `<!DOCTYPE html>
-<html>
 <head>
-<style>
-:root { --image-url: url('${image.src}'); }
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: transparent; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.carousel { background: transparent; height: 300px; width: 100vw; display: flex; align-items: center; overflow: hidden; }
-.track { display: flex; height: 220px; animation: slide ${duration}ms linear infinite; }
-.item { flex-shrink: 0; height: 100%; margin: 0; width: ${imageWidth}px; background-image: var(--image-url); background-size: contain; background-repeat: no-repeat; background-position: center; }
-@keyframes slide { 0% { transform: translateX(0); } 100% { transform: translateX(-${imageWidth}px); } }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ループスライダー</title>
+  <meta name="description" content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。" />
+  
+  <!-- OGP Settings -->
+  <meta property="og:title" content="ループスライダー" />
+  <meta property="og:description" content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。" />
+  <meta property="og:url" content="https://hiroho-t.github.io/" />
+  <meta property="og:site_name" content="ループスライダー" />
+  <meta property="og:locale" content="ja_JP" />
+  <meta property="og:image" content="https://hiroho-t.github.io/ogp.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="ループスライダー" />
+  <meta property="og:type" content="website" />
+  
+  <!-- Twitter Card Settings -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ループスライダー" />
+  <meta name="twitter:description" content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。" />
+  <meta name="twitter:image" content="https://hiroho-t.github.io/ogp.png" />
+  
+  <!-- Icons -->
+  <link rel="icon" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-<div class="carousel">
-<div class="track">${Array(20).fill(`<div class="item"></div>`).join("")}</div>
-</div>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-nav">
+        <h1 class="header-title">
+          <a href="https://hiroho-t.github.io/" class="header-link">ループスライダー</a>
+        </h1>
+      </div>
+      <div class="header-content">
+        <p class="header-tagline">ループアニメーションの「埋め込みコード」を作成</p>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+      <div class="main-content">
+        <div class="form-section">
+          <!-- URL Input Area -->
+          <div class="url-input-area">
+            <form class="form-container">
+              <div class="text-field">
+                <div class="input-container">
+                  <input
+                    aria-invalid="false"
+                    id="imageUrlInput"
+                    placeholder="https://example.com/image.svg"
+                    type="text"
+                    aria-label="画像URL入力欄"
+                    class="input"
+                  />
+                  <fieldset aria-hidden="true" class="input-outline">
+                    <legend><span></span></legend>
+                  </fieldset>
+                </div>
+              </div>
+              <button
+                class="button"
+                type="button"
+                id="loadImageBtn"
+                aria-label="画像を読み込み"
+              >
+                画像を読み込み
+              </button>
+            </form>
+            <div id="errorMessage" class="error-message"></div>
+          </div>
+
+          <!-- Settings -->
+          <div class="settings">
+            <div class="setting-group">
+              <h2 class="setting-title">ループ速度</h2>
+              <div class="slider-container">
+                <span class="slider">
+                  <span class="slider-rail"></span>
+                  <span class="slider-track"></span>
+                  <span class="slider-thumb">
+                    <input
+                      data-index="0"
+                      aria-label="ループ速度"
+                      aria-valuenow="25"
+                      aria-orientation="horizontal"
+                      aria-valuemax="50"
+                      aria-valuemin="1"
+                      type="range"
+                      min="1"
+                      max="50"
+                      step="1"
+                      id="speedSlider"
+                      class="slider-input"
+                      value="25"
+                    />
+                  </span>
+                </span>
+                <p class="slider-value" id="speedValue">やや遅い</p>
+              </div>
+            </div>
+
+            <div class="setting-group">
+              <h2 class="setting-title">画像の横幅</h2>
+              <div class="width-input-container">
+                <div class="text-field width-input-field" aria-label="画像の横幅">
+                  <label class="input-label" for="widthInput" id="widthInput-label">横幅 (px)</label>
+                  <div class="input-container">
+                    <input
+                      aria-invalid="false"
+                      id="widthInput"
+                      type="number"
+                      min="100"
+                      max="1000"
+                      class="input width-input"
+                      value="300"
+                    />
+                    <div class="input-adornment">
+                      <p class="input-adornment-text">px</p>
+                    </div>
+                    <fieldset aria-hidden="true" class="input-outline">
+                      <legend><span>横幅 (px)</span></legend>
+                    </fieldset>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-links">
+        <a class="footer-link" href="https://startwith.studio.site/" target="_blank" rel="noopener noreferrer">運営会社</a>
+      </div>
+      <p class="footer-copyright">© StartWith Inc.</p>
+    </footer>
+  </div>
+
+  <!-- Carousel Container -->
+  <div class="carousel-container" id="carouselContainer" style="display: none">
+    <div class="carousel-wrapper">
+      <div class="carousel-track" id="carouselTrack"></div>
+    </div>
+  </div>
+
+  <!-- Embed Section -->
+  <div class="embed-section" id="embedSection" style="display: none">
+    <div class="embed-container">
+      <div class="embed-title">📋 iframe埋め込みコード</div>
+      <div class="embed-code" id="embedCode"></div>
+      <button class="copy-btn" id="copyBtn" onclick="copyEmbedCode()">
+        コードをコピー
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
 </body>
-</html>`;
-
-        document.getElementById("embedCode").textContent = embedHTML;
-        document.getElementById("embedSection").style.display = "block";
-      }
-
-      // コピー機能
-      function copyEmbedCode() {
-        const embedCode = document.getElementById("embedCode").textContent;
-        navigator.clipboard.writeText(embedCode).then(() => {
-          const copyBtn = document.getElementById("copyBtn");
-          copyBtn.textContent = "コピー完了！";
-          copyBtn.classList.add("copied");
-          setTimeout(() => {
-            copyBtn.textContent = "コードをコピー";
-            copyBtn.classList.remove("copied");
-          }, 2000);
-        });
-      }
-
-      let animationId;
-      let startTime;
-      let currentPosition = 0;
-
-      // アニメーション開始
-      function startAnimation() {
-        stopAnimation();
-
-        const items = carouselTrack.children;
-        if (items.length === 0) return;
-
-        // 1つの画像の幅を計算
-        const singleItemWidth = imageWidth;
-
-        startTime = performance.now();
-
-        function animate(currentTime) {
-          if (!startTime) startTime = currentTime;
-
-          const duration = (51 - animationSpeed) * 2000;
-          const elapsed = currentTime - startTime;
-          const progress = (elapsed % duration) / duration;
-
-          currentPosition = -progress * singleItemWidth;
-          carouselTrack.style.transform = `translateX(${currentPosition}px)`;
-
-          animationId = requestAnimationFrame(animate);
-        }
-
-        animationId = requestAnimationFrame(animate);
-      }
-
-      // アニメーション停止
-      function stopAnimation() {
-        if (animationId) {
-          cancelAnimationFrame(animationId);
-          animationId = null;
-        }
-      }
-
-      // スライダーイベント
-      speedSlider.addEventListener("input", (e) => {
-        animationSpeed = parseInt(e.target.value);
-        let speedLabel;
-        if (animationSpeed <= 5) speedLabel = "極めて遅い";
-        else if (animationSpeed <= 10) speedLabel = "非常に遅い";
-        else if (animationSpeed <= 15) speedLabel = "とても遅い";
-        else if (animationSpeed <= 20) speedLabel = "遅い";
-        else if (animationSpeed <= 25) speedLabel = "やや遅い";
-        else if (animationSpeed <= 30) speedLabel = "普通";
-        else if (animationSpeed <= 35) speedLabel = "やや速い";
-        else if (animationSpeed <= 40) speedLabel = "速い";
-        else if (animationSpeed <= 45) speedLabel = "非常に速い";
-        else speedLabel = "極めて速い";
-
-        speedValue.textContent = speedLabel;
-        if (uploadedImages.length > 0) {
-          startAnimation();
-          generateEmbedCode();
-        }
-      });
-
-      // 初期化
-      updateCarousel();
-    </script>
-  </body>
 </html>
