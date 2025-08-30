@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>1枚のスライドショー</title>
+    <title>線形アニメーション</title>
     <meta
       name="description"
       content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。"
@@ -31,7 +31,7 @@
       name="twitter:description"
       content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。"
     />
-    <meta name="twitter:image" content="https://hiroho-t.github.io/loop-slider/ogp.png" />
+    <meta name="twitter:image" content="https://hiroho-t.github.io/loop-slider/public/ogp.png" />
 
     <!-- Icons -->
     <link rel="icon" href="public/favicon.png" />
@@ -46,7 +46,7 @@
     />
 
     <!-- Styles -->
-    <link rel="stylesheet" href="single-slide-show.css" />
+    <link rel="stylesheet" href="line.css" />
   </head>
 
   <body>
@@ -55,9 +55,7 @@
       <header class="header">
         <div class="header-nav">
           <h1 class="header-title">
-            <a href="https://hiroho-t.github.io/loop-slider/single-slide-show" class="header-link"
-              >1枚のスライドショー</a
-            >
+            <a href="line.html" class="header-link">線形アニメーション</a>
           </h1>
           <button
             id="menuToggle"
@@ -78,75 +76,105 @@
       <main class="main">
         <div class="main-content">
           <div class="form-section">
-            <!-- Image URL Input Area -->
-            <div class="image-url-area">
-              <div class="url-input-section">
-                <form class="url-form-container">
-                  <div class="text-field">
-                    <div class="input-container">
-                      <input
-                        aria-invalid="false"
-                        id="imageUrlInput"
-                        placeholder="https://example.com/image.jpg"
-                        type="text"
-                        aria-label="画像URL入力欄"
-                        class="input"
-                      />
-                    </div>
-                  </div>
-                  <button class="button" type="button" id="addImageBtn" aria-label="画像を追加">
-                    画像を追加
-                  </button>
-                </form>
-                <div class="url-info">
-                  <p>2~6枚まで追加可能です</p>
-                </div>
-              </div>
-              <div id="imageList" class="image-list"></div>
-              <div id="errorMessage" class="error-message"></div>
-            </div>
-
             <!-- Settings -->
-            <div class="settings" id="settingsPanel">
-              <div class="setting-group">
-                <h2 class="setting-title">再生間隔（ms）</h2>
+            <div class="settings">
+              <div class="setting-group third">
+                <h2 class="setting-title">線の太さ</h2>
                 <div class="width-input-container">
-                  <div class="text-field width-input-field" aria-label="再生間隔">
+                  <div class="text-field width-input-field" aria-label="線の太さ(px)">
                     <div class="input-container">
                       <input
                         aria-invalid="false"
-                        id="intervalInput"
+                        id="thicknessInput"
                         type="number"
-                        min="500"
-                        max="10000"
-                        step="100"
+                        min="0.5"
+                        max="1000"
+                        step="0.5"
                         class="input width-input"
-                        value="2000"
+                        value="2"
                       />
                       <div class="input-adornment">
-                        <p class="input-adornment-text">ms</p>
+                        <p class="input-adornment-text">px</p>
                       </div>
                     </div>
                   </div>
                 </div>
-                <p class="slider-value">
-                  1つのアイテムが表示され続ける時間をミリ秒（ms）単位で設定できます。
-                </p>
               </div>
-              <div class="setting-group">
-                <h2 class="setting-title">送り時間（ms）</h2>
+
+              <div class="setting-group third">
+                <h2 class="setting-title">線の長さ</h2>
                 <div class="width-input-container">
-                  <div class="text-field width-input-field" aria-label="送り時間">
+                  <div class="text-field width-input-field" aria-label="線の長さ(px)">
                     <div class="input-container">
                       <input
                         aria-invalid="false"
-                        id="transitionInput"
+                        id="lengthInput"
                         type="number"
-                        min="100"
-                        max="2000"
-                        step="50"
+                        min="1"
+                        max="1000"
+                        step="1"
                         class="input width-input"
-                        value="600"
+                        value="100"
+                      />
+                      <div class="input-adornment">
+                        <p class="input-adornment-text">px</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="setting-group third">
+                <h2 class="setting-title">線の色</h2>
+                <div class="width-input-container">
+                  <div class="text-field width-input-field" aria-label="線の色(カラーコード)">
+                    <div class="input-container">
+                      <input
+                        aria-invalid="false"
+                        id="colorInput"
+                        type="text"
+                        placeholder="#000000"
+                        class="input width-input"
+                        value="#000000"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="setting-group">
+                <h2 class="setting-title">ループ速度</h2>
+                <div class="slider-container">
+                  <div class="slider-wrapper">
+                    <input
+                      type="range"
+                      min="1"
+                      max="50"
+                      step="1"
+                      value="25"
+                      id="speedSlider"
+                      class="speed-slider"
+                      aria-label="ループ速度"
+                    />
+                  </div>
+                  <p class="slider-value" id="speedValue">やや遅い</p>
+                </div>
+              </div>
+
+              <div class="setting-group">
+                <h2 class="setting-title">間の待機時間</h2>
+                <div class="width-input-container">
+                  <div class="text-field width-input-field" aria-label="間の待機時間">
+                    <div class="input-container">
+                      <input
+                        aria-invalid="false"
+                        id="pauseInput"
+                        type="number"
+                        min="0"
+                        max="5000"
+                        step="10"
+                        class="input width-input"
+                        value="100"
                       />
                       <div class="input-adornment">
                         <p class="input-adornment-text">ms</p>
@@ -154,9 +182,6 @@
                     </div>
                   </div>
                 </div>
-                <p class="slider-value">
-                  アイテムが切り替わる速度をミリ秒（ms）単位で設定できます。
-                </p>
               </div>
             </div>
           </div>
@@ -165,7 +190,9 @@
         <div class="carousel-container" id="carouselContainer" style="display: none">
           <div class="carousel-wrapper">
             <div class="rotation-preview" id="rotationPreview">
-              <img id="rotationImage" alt="プレビュー画像" />
+              <div class="line-mask" id="lineMask">
+                <div class="line" aria-hidden="true"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -211,6 +238,6 @@
     </div>
 
     <!-- Scripts -->
-    <script src="single-slide-show.js"></script>
+    <script src="line_script.js"></script>
   </body>
 </html>
