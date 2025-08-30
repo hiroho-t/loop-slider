@@ -9,8 +9,8 @@
     "lint": "eslint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "export": "next build",
-    "deploy": "npm run export && gh-pages -d out"
+    "build:static": "next build",
+    "deploy": "npm run build:static && gh-pages -d out"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
