@@ -11,7 +11,7 @@ interface ImageUrlInputProps {
 
 const MAX_URL_LENGTH = 2048;
 
-export const ImageUrlInput = memo(({ onLoadImage, isLoading, error }: ImageUrlInputProps) => {
+const ImageUrlInputComponent = memo(({ onLoadImage, isLoading, error }: ImageUrlInputProps) => {
   const [url, setUrl] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -112,3 +112,7 @@ export const ImageUrlInput = memo(({ onLoadImage, isLoading, error }: ImageUrlIn
     </Box>
   );
 });
+
+ImageUrlInputComponent.displayName = 'ImageUrlInput';
+
+export const ImageUrlInput = ImageUrlInputComponent;

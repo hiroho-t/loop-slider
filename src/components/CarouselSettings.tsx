@@ -16,7 +16,7 @@ interface CarouselSettingsProps {
   onSettingsChange: (settings: Partial<ICarouselSettings>) => void;
 }
 
-export const CarouselSettings = memo(({ settings, onSettingsChange }: CarouselSettingsProps) => {
+const CarouselSettingsComponent = memo(({ settings, onSettingsChange }: CarouselSettingsProps) => {
   const handleSpeedChange = (_: Event, value: number | number[]) => {
     const speed = Array.isArray(value) ? value[0] : value;
     onSettingsChange({ speed });
@@ -165,3 +165,7 @@ export const CarouselSettings = memo(({ settings, onSettingsChange }: CarouselSe
     </Box>
   );
 });
+
+CarouselSettingsComponent.displayName = 'CarouselSettings';
+
+export const CarouselSettings = CarouselSettingsComponent;

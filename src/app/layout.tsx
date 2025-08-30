@@ -9,6 +9,7 @@ import { siteConfig } from "@/config/site";
 // Use only Noto Sans JP as requested
 const notoSansJp = Noto_Sans_JP({
   weight: ["400", "500", "700"],
+  subsets: ["latin"],
   display: "swap",
   variable: "--font-noto-sans-jp",
 });

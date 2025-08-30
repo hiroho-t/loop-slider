@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "export": "next build",
+    "deploy": "npm run export && gh-pages -d out"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -26,6 +28,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
+    "gh-pages": "^6.3.0",
     "prettier": "^3.6.2",
     "typescript": "^5"
   }
