@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ループスライダー</title>
+    <title>1枚のスライドショー</title>
     <meta
       name="description"
       content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。"
@@ -15,10 +15,10 @@
       property="og:description"
       content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。"
     />
-    <meta property="og:url" content="https://hiroho-t.github.io/loop-slider/" />
+    <meta property="og:url" content="https://hiroho-t.github.io/loop-slider/single-slide-show" />
     <meta property="og:site_name" content="ループスライダー" />
     <meta property="og:locale" content="ja_JP" />
-    <meta property="og:image" content="https://hiroho-t.github.io/loop-slider/public/ogp.png" />
+    <meta name="twitter:image" content="https://hiroho-t.github.io/loop-slider/ogp.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="ループスライダー" />
@@ -31,11 +31,11 @@
       name="twitter:description"
       content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。"
     />
-    <meta name="twitter:image" content="https://hiroho-t.github.io/loop-slider/public/ogp.png" />
+    <meta name="twitter:image" content="https://hiroho-t.github.io/loop-slider/ogp.png" />
 
     <!-- Icons -->
-    <link rel="icon" href="public/favicon.png" />
-    <link rel="apple-touch-icon" href="public/favicon.png" />
+    <link rel="icon" href="favicon.png" />
+    <link rel="apple-touch-icon" href="favicon.png" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -46,7 +46,7 @@
     />
 
     <!-- Styles -->
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="single-slide-show.css" />
   </head>
 
   <body>
@@ -55,8 +55,8 @@
       <header class="header">
         <div class="header-nav">
           <h1 class="header-title">
-            <a href="https://hiroho-t.github.io/loop-slider" class="header-link"
-              >ループスライダー</a
+            <a href="https://hiroho-t.github.io/loop-slider/circle" class="header-link"
+              >1枚のスライドショー</a
             >
           </h1>
           <button
@@ -78,77 +78,95 @@
       <main class="main">
         <div class="main-content">
           <div class="form-section">
-            <!-- URL Input Area -->
-            <div class="url-input-area">
-              <form class="form-container">
-                <div class="text-field">
-                  <div class="input-container">
-                    <input
-                      aria-invalid="false"
-                      id="imageUrlInput"
-                      placeholder="https://example.com/image.svg"
-                      type="text"
-                      aria-label="画像URL入力欄"
-                      class="input"
-                    />
+            <!-- Image URL Input Area -->
+            <div class="image-url-area">
+              <div class="url-input-section">
+                <form class="url-form-container">
+                  <div class="text-field">
+                    <div class="input-container">
+                      <input
+                        aria-invalid="false"
+                        id="imageUrlInput"
+                        placeholder="https://example.com/image.jpg"
+                        type="text"
+                        aria-label="画像URL入力欄"
+                        class="input"
+                      />
+                    </div>
                   </div>
+                  <button class="button" type="button" id="addImageBtn" aria-label="画像を追加">
+                    画像を追加
+                  </button>
+                </form>
+                <div class="url-info">
+                  <p>2~6枚まで追加可能です</p>
                 </div>
-                <button class="button" type="button" id="loadImageBtn" aria-label="画像を読み込み">
-                  画像を読み込み
-                </button>
-              </form>
+              </div>
+              <div id="imageList" class="image-list"></div>
               <div id="errorMessage" class="error-message"></div>
             </div>
 
             <!-- Settings -->
-            <div class="settings">
+            <div class="settings" id="settingsPanel">
               <div class="setting-group">
-                <h2 class="setting-title">ループ速度</h2>
-                <div class="slider-container">
-                  <div class="slider-wrapper">
-                    <input
-                      type="range"
-                      min="1"
-                      max="50"
-                      step="1"
-                      value="25"
-                      id="speedSlider"
-                      class="speed-slider"
-                      aria-label="ループ速度"
-                    />
-                  </div>
-                  <p class="slider-value" id="speedValue">やや遅い</p>
-                </div>
-              </div>
-
-              <div class="setting-group">
-                <h2 class="setting-title">画像の横幅</h2>
+                <h2 class="setting-title">再生間隔（ms）</h2>
                 <div class="width-input-container">
-                  <div class="text-field width-input-field" aria-label="画像の横幅">
+                  <div class="text-field width-input-field" aria-label="再生間隔">
                     <div class="input-container">
                       <input
                         aria-invalid="false"
-                        id="widthInput"
+                        id="intervalInput"
                         type="number"
-                        min="100"
-                        max="1000"
+                        min="500"
+                        max="10000"
+                        step="100"
                         class="input width-input"
-                        value="300"
+                        value="2000"
                       />
                       <div class="input-adornment">
-                        <p class="input-adornment-text">px</p>
+                        <p class="input-adornment-text">ms</p>
                       </div>
                     </div>
                   </div>
                 </div>
+                <p class="slider-value">
+                  1つのアイテムが表示され続ける時間をミリ秒（ms）単位で設定できます。
+                </p>
+              </div>
+              <div class="setting-group">
+                <h2 class="setting-title">送り時間（ms）</h2>
+                <div class="width-input-container">
+                  <div class="text-field width-input-field" aria-label="送り時間">
+                    <div class="input-container">
+                      <input
+                        aria-invalid="false"
+                        id="transitionInput"
+                        type="number"
+                        min="100"
+                        max="2000"
+                        step="50"
+                        class="input width-input"
+                        value="600"
+                      />
+                      <div class="input-adornment">
+                        <p class="input-adornment-text">ms</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <p class="slider-value">
+                  アイテムが切り替わる速度をミリ秒（ms）単位で設定できます。
+                </p>
               </div>
             </div>
           </div>
         </div>
-        <!-- Carousel Container -->
+        <!-- Preview Container -->
         <div class="carousel-container" id="carouselContainer" style="display: none">
           <div class="carousel-wrapper">
-            <div class="carousel-track" id="carouselTrack"></div>
+            <div class="rotation-preview" id="rotationPreview">
+              <img id="rotationImage" alt="プレビュー画像" />
+            </div>
           </div>
         </div>
 
@@ -192,6 +210,6 @@
     </div>
 
     <!-- Scripts -->
-    <script src="script.js"></script>
+    <script src="single-slide-show.js"></script>
   </body>
 </html>
