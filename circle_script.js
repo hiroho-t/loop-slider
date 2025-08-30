@@ -2,16 +2,15 @@
 let uploadedImages = [];
 let animationSpeed = 25;
 let imageWidth = 300;
-let animationId;
-let startTime;
-let currentPosition = 0;
+// (No RAF animation needed; CSS handles rotation)
 
 // DOM elements
 const imageUrlInput = document.getElementById("imageUrlInput");
 const loadImageBtn = document.getElementById("loadImageBtn");
 const errorMessage = document.getElementById("errorMessage");
-const carouselTrack = document.getElementById("carouselTrack");
 const carouselContainer = document.getElementById("carouselContainer");
+const rotationPreview = document.getElementById("rotationPreview");
+const rotationImage = document.getElementById("rotationImage");
 const speedSlider = document.getElementById("speedSlider");
 const speedValue = document.getElementById("speedValue");
 const widthInput = document.getElementById("widthInput");
@@ -48,10 +47,9 @@ document.addEventListener("DOMContentLoaded", function() {
   // Width input events
   widthInput.addEventListener("input", (e) => {
     imageWidth = parseInt(e.target.value) || 300;
-    if (uploadedImages.length > 0) {
-      updateCarouselWidth();
-      generateEmbedCode();
-    }
+    // Keep square preview and update embed
+    updatePreviewSize();
+    if (uploadedImages.length > 0) generateEmbedCode();
   });
 
   widthInput.addEventListener("focus", () => {
@@ -65,16 +63,13 @@ document.addEventListener("DOMContentLoaded", function() {
   // Speed slider events
   speedSlider.addEventListener("input", (e) => {
     animationSpeed = parseInt(e.target.value);
-    console.log("Speed changed to:", animationSpeed); // Debug
     updateSpeedLabel();
-    if (uploadedImages.length > 0) {
-      startAnimation();
-      generateEmbedCode();
-    }
+    updatePreviewSpeed();
+    if (uploadedImages.length > 0) generateEmbedCode();
   });
 
   // Initialize
-  updateCarousel();
+  updatePreview();
   updateSpeedLabel();
   setupDrawer();
 });
@@ -110,7 +105,7 @@ function loadImageFromUrl() {
       name: "URL画像",
     };
     uploadedImages.push(imageData);
-    updateCarousel();
+    updatePreview();
     setLoadingState(false);
   };
 
@@ -150,40 +145,69 @@ function isValidUrl(string) {
   }
 }
 
-// Update carousel
-function updateCarousel() {
+// Update rotation preview
+function updatePreview() {
   if (uploadedImages.length === 0) {
     carouselContainer.style.display = "none";
-    stopAnimation();
     document.getElementById("embedSection").style.display = "none";
     return;
   }
 
-  // Show carousel area
+  const image = uploadedImages[0];
+  rotationImage.src = image.src;
+  updatePreviewSize();
+  updatePreviewSpeed();
   carouselContainer.style.display = "block";
-
-  // Repeat images for smooth loop
-  let carouselHTML = "";
-  const repeatCount = 20;
-
-  for (let i = 0; i < repeatCount; i++) {
-    uploadedImages.forEach((image) => {
-      carouselHTML += `
-        <div class="carousel-item" style="background-image: url('${image.src}'); width: ${imageWidth}px;"></div>
-      `;
-    });
-  }
-
-  carouselTrack.innerHTML = carouselHTML;
-  startAnimation();
   generateEmbedCode();
 }
 
-// Update carousel width
-function updateCarouselWidth() {
-  const items = carouselTrack.querySelectorAll(".carousel-item");
-  items.forEach((item) => {
-    item.style.width = imageWidth + "px";
+function updatePreviewSize() {
+  if (rotationPreview) {
+    rotationPreview.style.width = imageWidth + "px";
+    rotationPreview.style.height = imageWidth + "px";
+  }
+}
+
+function updatePreviewSpeed() {
+  const duration = (51 - animationSpeed) * 2000; // ms
+  if (rotationPreview) {
+    rotationPreview.style.setProperty("--duration", `${duration}ms`);
+  }
+}
+
+// Drawer logic
+function setupDrawer() {
+  if (!menuToggle || !drawer || !drawerOverlay) return;
+
+  const open = () => {
+    drawer.classList.add("open");
+    drawer.setAttribute("aria-hidden", "false");
+    drawerOverlay.hidden = false;
+    // allow fade-in
+    requestAnimationFrame(() => drawerOverlay.classList.add("open"));
+    menuToggle.setAttribute("aria-expanded", "true");
+  };
+
+  const close = () => {
+    drawer.classList.remove("open");
+    drawer.setAttribute("aria-hidden", "true");
+    drawerOverlay.classList.remove("open");
+    menuToggle.setAttribute("aria-expanded", "false");
+    // wait for transition end before hiding overlay
+    setTimeout(() => { drawerOverlay.hidden = true; }, 200);
+  };
+
+  menuToggle.addEventListener("click", open);
+  drawerOverlay.addEventListener("click", close);
+  if (drawerClose) drawerClose.addEventListener("click", close);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") close();
+  });
+
+  // Close when a link inside drawer is clicked
+  drawer.addEventListener("click", (e) => {
+    const target = e.target;
+    if (target && target.tagName === 'A') close();
   });
 }
 
@@ -204,67 +228,16 @@ function updateSpeedLabel() {
   speedValue.textContent = speedLabel;
 }
 
-// Drawer logic
-function setupDrawer() {
-  if (!menuToggle || !drawer || !drawerOverlay) return;
-
-  const open = () => {
-    drawer.classList.add("open");
-    drawer.setAttribute("aria-hidden", "false");
-    drawerOverlay.hidden = false;
-    requestAnimationFrame(() => drawerOverlay.classList.add("open"));
-    menuToggle.setAttribute("aria-expanded", "true");
-  };
-
-  const close = () => {
-    drawer.classList.remove("open");
-    drawer.setAttribute("aria-hidden", "true");
-    drawerOverlay.classList.remove("open");
-    menuToggle.setAttribute("aria-expanded", "false");
-    setTimeout(() => { drawerOverlay.hidden = true; }, 200);
-  };
-
-  menuToggle.addEventListener("click", open);
-  drawerOverlay.addEventListener("click", close);
-  if (drawerClose) drawerClose.addEventListener("click", close);
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") close();
-  });
-
-  drawer.addEventListener("click", (e) => {
-    const target = e.target;
-    if (target && target.tagName === 'A') close();
-  });
-}
-
 // Generate embed code
 function generateEmbedCode() {
   if (uploadedImages.length === 0) return;
 
   const image = uploadedImages[0];
-  const duration = (51 - animationSpeed) * 2000;
+  const duration = (51 - animationSpeed) * 2000; // ms
 
-  const embedHTML = `<!DOCTYPE html>
-<html>
-<head>
-<style>
-:root { --image-url: url('${image.src}'); }
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: transparent; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.carousel { background: transparent; height: 300px; width: 100vw; display: flex; align-items: center; overflow: hidden; }
-.track { display: flex; height: 220px; animation: slide ${duration}ms linear infinite; }
-.item { flex-shrink: 0; height: 100%; margin: 0; width: ${imageWidth}px; background-image: var(--image-url); background-size: contain; background-repeat: no-repeat; background-position: center; }
-@keyframes slide { 0% { transform: translateX(0); } 100% { transform: translateX(-${imageWidth}px); } }
-</style>
-</head>
-<body>
-<div class="carousel">
-<div class="track">${Array(20).fill(`<div class="item"></div>`).join("")}</div>
-</div>
-</body>
-</html>`;
+  const iframeCode = `<iframe width="${imageWidth}" height="${imageWidth}" style="border:0; overflow:hidden;" loading="lazy" referrerpolicy="no-referrer" srcdoc='<!DOCTYPE html><html><head><meta charset=\'utf-8\'><style>html,body{height:100%;margin:0;background:transparent} .wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;background:transparent} img{width:100%;height:100%;object-fit:contain;transform-origin:center center;animation:spin ${duration}ms linear infinite}@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}</style></head><body><div class=\'wrap\'><img src=\'${image.src}\' alt=\'\'></div></body></html>'></iframe>`;
 
-  document.getElementById("embedCode").textContent = embedHTML;
+  document.getElementById("embedCode").textContent = iframeCode;
   document.getElementById("embedSection").style.display = "block";
 }
 
@@ -321,36 +294,4 @@ function copyEmbedCode() {
   }
 }
 
-// Start animation
-function startAnimation() {
-  stopAnimation();
-
-  const items = carouselTrack.children;
-  if (items.length === 0) return;
-
-  const singleItemWidth = imageWidth;
-  startTime = performance.now();
-
-  function animate(currentTime) {
-    if (!startTime) startTime = currentTime;
-
-    const duration = (51 - animationSpeed) * 2000;
-    const elapsed = currentTime - startTime;
-    const progress = (elapsed % duration) / duration;
-
-    currentPosition = -progress * singleItemWidth;
-    carouselTrack.style.transform = `translateX(${currentPosition}px)`;
-
-    animationId = requestAnimationFrame(animate);
-  }
-
-  animationId = requestAnimationFrame(animate);
-}
-
-// Stop animation
-function stopAnimation() {
-  if (animationId) {
-    cancelAnimationFrame(animationId);
-    animationId = null;
-  }
-}
+// (Removed slider-based RAF animation; replaced with CSS rotation)

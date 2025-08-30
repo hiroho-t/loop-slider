@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ループスライダー</title>
+    <title>回転アニメーション</title>
     <meta
       name="description"
       content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。"
@@ -15,10 +15,10 @@
       property="og:description"
       content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。"
     />
-    <meta property="og:url" content="https://hiroho-t.github.io/loop-slider/" />
+    <meta property="og:url" content="https://hiroho-t.github.io/circle" />
     <meta property="og:site_name" content="ループスライダー" />
     <meta property="og:locale" content="ja_JP" />
-    <meta property="og:image" content="https://hiroho-t.github.io/loop-slider/public/ogp.png" />
+    <meta name="twitter:image" content="https://hiroho-t.github.io/loop-slider/public/ogp.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="ループスライダー" />
@@ -46,7 +46,7 @@
     />
 
     <!-- Styles -->
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="circle_styles.css" />
   </head>
 
   <body>
@@ -55,7 +55,7 @@
       <header class="header">
         <div class="header-nav">
           <h1 class="header-title">
-            <a href="https://hiroho-t.github.io/" class="header-link">ループスライダー</a>
+            <a href="https://hiroho-t.github.io/circle" class="header-link">回転アニメーション</a>
           </h1>
           <button
             id="menuToggle"
@@ -143,10 +143,12 @@
             </div>
           </div>
         </div>
-        <!-- Carousel Container -->
+        <!-- Preview Container -->
         <div class="carousel-container" id="carouselContainer" style="display: none">
           <div class="carousel-wrapper">
-            <div class="carousel-track" id="carouselTrack"></div>
+            <div class="rotation-preview" id="rotationPreview">
+              <img id="rotationImage" alt="プレビュー画像" />
+            </div>
           </div>
         </div>
 
@@ -189,6 +191,6 @@
     </div>
 
     <!-- Scripts -->
-    <script src="script.js"></script>
+    <script src="circle_script.js"></script>
   </body>
 </html>

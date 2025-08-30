@@ -228,7 +228,7 @@ body {
   padding: 8px 14px;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 16px; /* requested 16px */
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -483,6 +483,33 @@ body {
   border-radius: 10px;
 }
 
+/* Rotation Preview */
+.rotation-preview {
+  width: 300px; /* default */
+  height: 300px; /* default */
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rotation-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform-origin: center center;
+  animation: spin var(--duration, 52000ms) linear infinite; /* default ~やや遅い */
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Embed Section */
 .embed-section {
   padding: 30px;
@@ -618,7 +645,7 @@ body {
   width: 320px;
   max-width: 90vw;
   background: #fff;
-  box-shadow: -8px 0 24px rgba(0,0,0,0.1);
+  box-shadow: -8px 0 24px rgba(0, 0, 0, 0.1);
   z-index: 9999;
   transform: translateX(100%);
   transition: transform 240ms ease;
