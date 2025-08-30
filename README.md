@@ -1,4 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ループスライダー
+
+画像をアップロードして、ループアニメーションを作成するWebアプリケーションです。
+
+## 機能
+
+- 画像ファイルのアップロード（ドラッグ&ドロップ対応）
+- ループアニメーションの作成
+- アニメーション速度の調整
+- レスポンシブデザイン
+- モダンなNext.jsベースの実装
+
+## 技術仕様
+
+- **フレームワーク**: [Next.js](https://nextjs.org) (App Router)
+- **言語**: TypeScript
+- **スタイリング**: CSS Modules + Tailwind CSS
+- **状態管理**: React Hooks
+- **ファイル処理**: HTML5 File API
+- **アニメーション**: CSS Animations
+
+## 使用方法
+
+1. 画像ファイルをアップロードエリアにドラッグ&ドロップするか、クリックしてファイルを選択
+2. スライダーでループ速度を調整
+3. アニメーションを楽しむ！
 
 ## Getting Started
 
@@ -34,3 +59,7 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## ライセンス
+
+MIT License
