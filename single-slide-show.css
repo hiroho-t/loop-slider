@@ -192,8 +192,6 @@ body {
   opacity: 0.3;
 }
 
-
-
 /* Text Field */
 .text-field {
   display: inline-flex;
@@ -245,8 +243,6 @@ body {
   color: currentColor;
   opacity: 0.42;
 }
-
-
 
 /* Button */
 .button {
@@ -341,8 +337,6 @@ body {
   font-weight: 600;
 }
 
-
-
 .slider-value {
   font-weight: 600;
   color: #999;
@@ -370,8 +364,6 @@ body {
   border-radius: 8px;
 }
 
-
-
 .input-adornment {
   display: flex;
   max-height: 2em;
@@ -390,8 +382,6 @@ body {
   text-align: center;
   padding-right: 0;
 }
-
-
 
 /* Footer */
 .footer {
@@ -545,8 +535,6 @@ body {
     padding-right: 16px;
   }
 
-
-
   .settings {
     flex-direction: column;
   }
@@ -575,8 +563,6 @@ body {
     height: 120px;
   }
 }
-
-
 
 /* Right Drawer */
 .drawer-overlay {
