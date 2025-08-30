@@ -6,8 +6,6 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
-  basePath: process.env.NODE_ENV === 'production' ? '/loop-slider' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/loop-slider/' : '',
 };
 
 export default nextConfig;
