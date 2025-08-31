@@ -169,7 +169,9 @@ function updateCarousel() {
   for (let i = 0; i < repeatCount; i++) {
     uploadedImages.forEach((image) => {
       carouselHTML += `
-        <div class="carousel-item" style="background-image: url('${image.src}'); width: ${imageWidth}px;"></div>
+        <div class=\"carousel-item\" style=\"width: ${imageWidth}px;\">
+          <img src=\"${image.src}\" alt=\"carousel image\" />
+        </div>
       `;
     });
   }
@@ -248,18 +250,18 @@ function generateEmbedCode() {
 <html>
 <head>
 <style>
-:root { --image-url: url('${image.src}'); }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { background: transparent; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.carousel { background: transparent; height: 300px; width: 100vw; display: flex; align-items: center; overflow: hidden; }
-.track { display: flex; height: 220px; animation: slide ${duration}ms linear infinite; }
-.item { flex-shrink: 0; height: 100%; margin: 0; width: ${imageWidth}px; background-image: var(--image-url); background-size: contain; background-repeat: no-repeat; background-position: center; }
+.carousel { background: transparent; width: 100vw; display: flex; align-items: center; overflow: hidden; }
+.track { display: flex; align-items: center; animation: slide ${duration}ms linear infinite; }
+.item { flex-shrink: 0; margin: 0; width: ${imageWidth}px; }
+.item img { display: block; width: 100%; height: auto; }
 @keyframes slide { 0% { transform: translateX(0); } 100% { transform: translateX(-${imageWidth}px); } }
 </style>
 </head>
 <body>
-<div class="carousel">
-<div class="track">${Array(20).fill(`<div class="item"></div>`).join("")}</div>
+<div class=\"carousel\">
+<div class=\"track\">${Array(20).fill(`<div class=\\\"item\\\"><img src=\\\"${image.src}\\\" alt=\\\"\\\" /></div>`).join("")}</div>
 </div>
 </body>
 </html>`;
