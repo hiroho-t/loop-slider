@@ -260,8 +260,8 @@ body { background: transparent; height: 100vh; display: flex; align-items: cente
 </style>
 </head>
 <body>
-<div class=\"carousel\">
-<div class=\"track\">${Array(20).fill(`<div class=\\\"item\\\"><img src=\\\"${image.src}\\\" alt=\\\"\\\" /></div>`).join("")}</div>
+<div class="carousel">
+<div class="track">${Array(20).fill(`<div class="item"><img src="${image.src}" alt="" /></div>`).join("")}</div>
 </div>
 </body>
 </html>`;
