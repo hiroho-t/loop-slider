@@ -446,12 +446,20 @@ ${duplicatesHtml}
   </div>
 <script>
     (function() {
-      const wrapper = document.querySelector('.swiper-wrapper-like');
-      const slides = Array.from(document.querySelectorAll('.swiper-slide-like'));
-      const originalCount = ` + originalCount + `;
-      const slideWidth = wrapper.parentElement.clientWidth / 1.4 + (3 * wrapper.parentElement.clientWidth) / 100; // スライド幅 + margin(1.5vw * 2)
-      let currentIndex = originalCount; // 真ん中のグループから開始
-      let isAnimating = false;
+      // DOM読み込み完了まで待機
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSlider);
+      } else {
+        initSlider();
+      }
+      
+      function initSlider() {
+        const wrapper = document.querySelector('.swiper-wrapper-like');
+        const slides = Array.from(document.querySelectorAll('.swiper-slide-like'));
+        const originalCount = ` + originalCount + `;
+        let slideWidth = wrapper.parentElement.clientWidth / 1.4 + (3 * wrapper.parentElement.clientWidth) / 100; // スライド幅 + margin(1.5vw * 2)
+        let currentIndex = originalCount; // 真ん中のグループから開始
+        let isAnimating = false;
       
       if (originalCount === 0) return;
       
@@ -490,30 +498,21 @@ ${duplicatesHtml}
           // 最後のオリジナル画像まで普通にアニメーション
           updateSlides(true);
           setTimeout(function() {
-            // 新しいアプローチ：リセットせずにDOMを動的に拡張
-            // 最後に到達したら、新しい複製スライドを後ろに追加
-            const newSlides = uploadedImages
-              .map((image, index) => {
-                const slideDiv = document.createElement('div');
-                slideDiv.className = 'swiper-slide-like';
-                slideDiv.setAttribute('data-original-index', index.toString());
-                
-                const img = document.createElement('img');
-                img.src = image.src;
-                img.alt = 'スライド' + (index + 1);
-                slideDiv.appendChild(img);
-                
-                return slideDiv;
-              });
+            // 埋め込みコードでは従来のリセット方式を使用
+            wrapper.style.transitionProperty = 'none';
+            currentIndex = originalCount;
             
-            // 新しいスライドをwrapperの最後に追加
-            newSlides.forEach(slide => wrapper.appendChild(slide));
+            const containerWidth = wrapper.parentElement.clientWidth;
+            const slideOffset = (containerWidth - slideWidth) / 2;
+            const translateX = slideOffset - (currentIndex * slideWidth);
+            wrapper.style.transform = 'translateX(' + translateX + 'px)';
             
-            // slides配列を更新
-            slides = Array.from(document.querySelectorAll('.swiper-slide-like'));
-            
-            // 現在のインデックスはそのまま、アニメーション続行
-            isAnimating = false;
+            requestAnimationFrame(function() {
+              wrapper.style.transitionProperty = 'transform';
+              wrapper.style.transitionDuration = '3000ms';
+              wrapper.style.transitionTimingFunction = 'ease';
+              isAnimating = false;
+            });
           }, 3000);
         } else {
           updateSlides(true);
@@ -523,20 +522,53 @@ ${duplicatesHtml}
         }
       }
       
-      // 初期表示
-      updateSlides(false);
+      // 初期化とリサイズ対応を改善
+      function initializeSlider() {
+        // コンテナサイズが正しく取得できるまで待機
+        const containerWidth = wrapper.parentElement.clientWidth;
+        if (containerWidth === 0) {
+          // サイズが0の場合は少し待ってから再試行
+          setTimeout(initializeSlider, 100);
+          return;
+        }
+        
+        // スライド幅を再計算
+        const newSlideWidth = containerWidth / 1.4 + (3 * containerWidth) / 100;
+        if (Math.abs(newSlideWidth - slideWidth) > 1) {
+          // サイズが大きく変わった場合は再計算
+          slideWidth = newSlideWidth;
+        }
+        
+        // 初期表示
+        updateSlides(false);
+        
+        // 自動再生開始
+        if (!window.sliderInterval) {
+          window.sliderInterval = setInterval(nextSlide, 3000);
+        }
+      }
       
-      // 自動再生
-      setInterval(nextSlide, 3000);
+      // 初期化
+      initializeSlider();
       
       // リサイズ対応
       window.addEventListener('resize', function() {
-        const newSlideWidth = wrapper.parentElement.clientWidth / 1.4;
-        if (Math.abs(newSlideWidth - slideWidth) > 1) {
-          location.reload(); // 大きなリサイズは再読み込み
-        }
+        clearInterval(window.sliderInterval);
+        window.sliderInterval = null;
+        setTimeout(initializeSlider, 200);
       });
-})();
+      
+      // MutationObserver でサイズ変更を監視（iframeサイズ変更対応）
+      if (window.ResizeObserver) {
+        const resizeObserver = new ResizeObserver(function(entries) {
+          clearInterval(window.sliderInterval);
+          window.sliderInterval = null;
+          setTimeout(initializeSlider, 200);
+        });
+        resizeObserver.observe(wrapper.parentElement);
+      }
+      } // initSlider function end
+    })();
 </script>
 </body>
 </html>`;
