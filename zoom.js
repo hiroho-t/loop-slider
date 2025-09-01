@@ -197,22 +197,22 @@ ${duplicatesHtml}
     </div>
     <style>
       .swiper-like { width: 100%; overflow: hidden; position: relative; }
-      .swiper-wrapper-like { display: flex; align-items: center; height: 100%; will-change: transform; transition: transform 3000ms ease; gap: 0; }
+      .swiper-wrapper-like { display: flex; align-items: center; height: 100%; will-change: transform; transition: none; gap: 0; }
       .swiper-slide-like { flex-shrink: 0; width: 71.43vw; display: flex; align-items: center; justify-content: center; position: relative; margin: 0 1.5vw; }
       .swiper-slide-like img { 
         width: 100%; 
         height: auto; 
         transform: scale(0.85); 
-        transition: transform 3000ms ease;
+        transition: none; /* 初期状態ではtransitionを無効化 */
       }
       .swiper-slide-active img { 
         transform: scale(1); 
-        transition: transform 3000ms ease;
+        transition: none; /* 初期状態ではtransitionを無効化 */
       }
       .swiper-slide-prev img, .swiper-slide-next img, 
       .swiper-slide-duplicate-prev img, .swiper-slide-duplicate-next img { 
         transform: scale(0.85); 
-        transition: transform 3000ms ease;
+        transition: none; /* 初期状態ではtransitionを無効化 */
       }
     </style>
   `;
@@ -246,11 +246,36 @@ ${duplicatesHtml}
     if (nextSlide) nextSlide.classList.add('swiper-slide-next');
 
     const containerWidth = wrapper.parentElement.clientWidth;
+    
+    // コンテナ幅が0の場合は処理を停止
+    if (containerWidth === 0) {
+      console.warn('⚠️ Container width is 0! Skipping slide update to prevent positioning errors.');
+      console.log('Current index:', currentIndex, 'Slides count:', slides.length);
+      return;
+    }
+    
     const slideOffset = (containerWidth - slideWidth) / 2;
     const translateX = slideOffset - currentIndex * slideWidth;
 
+    // アニメーション制御
+    if (!animate) {
+      // 初期表示時：transitionを無効化して瞬間的に位置設定
+      console.log('🎬 INITIAL POSITIONING (no animation)');
+      wrapper.style.transition = 'none';
+      wrapper.style.transform = 'translateX(' + translateX + 'px)';
+      
+      // 次フレームでtransitionを復活（ブラウザの再描画を待つ）
+      requestAnimationFrame(() => {
+        wrapper.style.transition = 'transform 3000ms ease';
+      });
+    } else {
+      // 通常のアニメーション
+      wrapper.style.transform = 'translateX(' + translateX + 'px)';
+    }
+
     // 位置計算の詳細をログ
     console.log('=== updateSlides Position Debug ===');
+    console.log('Animation mode:', animate ? 'ANIMATED' : 'INSTANT');
     console.log('Container width:', containerWidth);
     console.log('Slide width:', slideWidth);
     console.log('Current index:', currentIndex);
@@ -277,12 +302,18 @@ ${duplicatesHtml}
       console.log('Next slide right edge:', nextLeft + slideWidth);
       console.log('Next slide visible width:', Math.max(0, Math.min(slideWidth, containerWidth - Math.max(0, nextLeft - containerWidth))));
     }
-
-    wrapper.style.transform = 'translateX(' + translateX + 'px)';
   }
 
   function nextSlide() {
     if (isAnimating) return;
+    
+    // コンテナ幅チェック - 0の場合はスキップ
+    const containerWidth = wrapper.parentElement.clientWidth;
+    if (containerWidth === 0) {
+      console.warn('⚠️ Container width is 0! Skipping slide transition to prevent errors.');
+      return;
+    }
+    
     isAnimating = true;
 
     console.log('--- Next slide triggered ---');
@@ -303,6 +334,14 @@ ${duplicatesHtml}
     if (currentIndex >= originalCount * 2) {
       updateSlides(true);
       setTimeout(function () {
+        // ループ拡張前にも幅をチェック
+        const extendContainerWidth = wrapper.parentElement.clientWidth;
+        if (extendContainerWidth === 0) {
+          console.warn('⚠️ Container width is 0 during loop extension! Deferring extension.');
+          isAnimating = false;
+          return;
+        }
+        
         console.log('=== LOOP EXTENSION START ===');
         console.log('Current index before extension:', currentIndex);
         console.log('Current slides count before extension:', slides.length);
@@ -364,8 +403,30 @@ ${duplicatesHtml}
     }
   }
 
-  // Start preview
+  // Start preview with initial state logging
+  console.log('=== INITIAL SETUP ===');
+  console.log('Total uploaded images:', originalCount);
+  console.log('Initial currentIndex (should start at originalCount):', currentIndex);
+  console.log('Total slides created:', slides.length);
+  console.log('Expected structure: duplicates(' + originalCount + ') + originals(' + originalCount + ') + duplicates(' + originalCount + ')');
+  
+  // 初期位置を瞬間設定（アニメーションなし）
   updateSlides(false);
+  
+  // 1秒後にCSSトランジションを有効化
+  setTimeout(() => {
+    console.log('🎨 Enabling CSS transitions for smooth animations');
+    const allImages = rotationPreview.querySelectorAll('.swiper-slide-like img');
+    allImages.forEach(img => {
+      img.style.transition = 'transform 3000ms ease';
+    });
+  }, 1000);
+  
+  console.log('=== FIRST ANIMATION START (after 3s delay) ===');
+  setTimeout(() => {
+    console.log('About to start automatic slide progression...');
+  }, 2900);
+  
   setInterval(nextSlide, 3000);
 
   // Handle resize
@@ -413,26 +474,26 @@ function generateEmbedCode() {
     body { overflow: hidden; }
     /* Swiperライクなスタイル */
     .swiper-like { width: 100vw; overflow: hidden; position: relative; }
-    .swiper-wrapper-like { display: flex; align-items: center; height: 100%; will-change: transform; transition: transform 3000ms ease; gap: 0; }
+    .swiper-wrapper-like { display: flex; align-items: center; height: 100%; will-change: transform; transition: none; gap: 0; }
     .swiper-slide-like { flex-shrink: 0; width: 71.43vw; /* 100vw / 1.4 ≈ 71.43vw */ display: flex; align-items: center; justify-content: center; position: relative; margin: 0 1.5vw; }
     .swiper-slide-like img { 
       width: 100%; 
       height: auto; 
       transform: scale(0.85); /* 全て縮小状態で固定 */ 
-      transition: transform 3000ms ease; /* 移動速度と同じ3000msアニメーション */
+      transition: none; /* 初期状態ではtransitionを無効化 */
     }
     
     /* アクティブスライドのみサイズ調整（スムーズに変更） */
     .swiper-slide-active img { 
       transform: scale(1); 
-      transition: transform 3000ms ease; /* 移動速度と同じ3000msアニメーション */
+      transition: none; /* 初期状態ではtransitionを無効化 */
     }
     
     /* 隣接スライドは縮小状態を維持（スムーズに変更） */
     .swiper-slide-prev img, .swiper-slide-next img, 
     .swiper-slide-duplicate-prev img, .swiper-slide-duplicate-next img { 
       transform: scale(0.85); 
-      transition: transform 3000ms ease; /* 移動速度と同じ3000msアニメーション */
+      transition: none; /* 初期状態ではtransitionを無効化 */
     }
 </style>
 </head>
@@ -484,7 +545,20 @@ ${duplicatesHtml}
         const slideOffset = (containerWidth - slideWidth) / 2; // 中央配置のオフセット
         const translateX = slideOffset - (currentIndex * slideWidth);
         
-        wrapper.style.transform = 'translateX(' + translateX + 'px)';
+        // アニメーション制御
+        if (!animate) {
+          // 初期表示時：transitionを無効化して瞬間的に位置設定
+          wrapper.style.transition = 'none';
+          wrapper.style.transform = 'translateX(' + translateX + 'px)';
+          
+          // 次フレームでtransitionを復活（ブラウザの再描画を待つ）
+          requestAnimationFrame(function() {
+            wrapper.style.transition = 'transform 3000ms ease';
+          });
+        } else {
+          // 通常のアニメーション
+          wrapper.style.transform = 'translateX(' + translateX + 'px)';
+        }
       }
       
       function nextSlide() {
@@ -539,8 +613,16 @@ ${duplicatesHtml}
           slideWidth = newSlideWidth;
         }
         
-        // 初期表示
+        // 初期表示（アニメーションなし）
         updateSlides(false);
+        
+        // 1秒後にCSSトランジションを有効化
+        setTimeout(function() {
+          const allImages = document.querySelectorAll('.swiper-slide-like img');
+          allImages.forEach(function(img) {
+            img.style.transition = 'transform 3000ms ease';
+          });
+        }, 1000);
         
         // 自動再生開始
         if (!window.sliderInterval) {
