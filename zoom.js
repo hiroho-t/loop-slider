@@ -448,8 +448,8 @@ ${duplicatesHtml}
     (function() {
       const wrapper = document.querySelector('.swiper-wrapper-like');
       const slides = Array.from(document.querySelectorAll('.swiper-slide-like'));
-      const originalCount = ${originalCount};
-      const slideWidth = wrapper.parentElement.clientWidth / 1.4 + (3 * wrapper.parentElement.clientWidth) / 100; // スライド幅 + margin(1.5vw * 2) // スライド幅
+      const originalCount = ` + originalCount + `;
+      const slideWidth = wrapper.parentElement.clientWidth / 1.4 + (3 * wrapper.parentElement.clientWidth) / 100; // スライド幅 + margin(1.5vw * 2)
       let currentIndex = originalCount; // 真ん中のグループから開始
       let isAnimating = false;
       
