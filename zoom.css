@@ -1,0 +1,54 @@
+/* Zoom carousel specific styles (builds on single-slide-show.css) */
+
+.settings {
+  /* follow line.html layout */
+  display: flex;
+  gap: 32px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.setting-group {
+  /* two per row */
+  flex: 1 1 calc(50% - 16px);
+  padding: 24px;
+  height: 100%;
+  background-color: #fff;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+}
+
+/* Swiper container styling */
+.swiper {
+  width: 100vw;
+  overflow: hidden;
+}
+
+.swiper-wrapper {
+  align-items: center; /* Center slides vertically like sample.html */
+}
+
+.swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swiper-slide img {
+  width: 100%;
+  height: auto;
+  transition: transform var(--slide-speed, 600ms) ease;
+}
+
+/* Scale down previous and next slides like sample.html */
+.swiper-slide-prev img,
+.swiper-slide-next img,
+.swiper-slide-duplicate-prev img,
+.swiper-slide-duplicate-next img {
+  transform: scale(0.85);
+}
+
+/* Preview container override */
+.rotation-preview {
+  width: 100%;
+}
