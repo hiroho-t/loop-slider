@@ -197,8 +197,8 @@ ${duplicatesHtml}
     </div>
     <style>
       .swiper-like { width: 100%; overflow: hidden; position: relative; }
-      .swiper-wrapper-like { display: flex; align-items: center; height: 100%; will-change: transform; transition: transform 3000ms ease; gap: 3vw; }
-      .swiper-slide-like { flex-shrink: 0; width: 71.43vw; display: flex; align-items: center; justify-content: center; position: relative; }
+      .swiper-wrapper-like { display: flex; align-items: center; height: 100%; will-change: transform; transition: transform 3000ms ease; gap: 0; }
+      .swiper-slide-like { flex-shrink: 0; width: 71.43vw; display: flex; align-items: center; justify-content: center; position: relative; margin: 0 1.5vw; }
       .swiper-slide-like img { 
         width: 100%; 
         height: auto; 
@@ -220,8 +220,7 @@ ${duplicatesHtml}
   // Initialize vanilla JavaScript carousel (same logic as iframe)
   const wrapper = rotationPreview.querySelector('.swiper-wrapper-like');
   let slides = Array.from(rotationPreview.querySelectorAll('.swiper-slide-like'));
-  const slideWidth =
-    wrapper.parentElement.clientWidth / 1.4 + (3 * wrapper.parentElement.clientWidth) / 100;
+  const slideWidth = wrapper.parentElement.clientWidth / 1.4 + (3 * wrapper.parentElement.clientWidth) / 100; // スライド幅 + margin(1.5vw * 2)
   let currentIndex = originalCount;
   let isAnimating = false;
 
@@ -249,6 +248,35 @@ ${duplicatesHtml}
     const containerWidth = wrapper.parentElement.clientWidth;
     const slideOffset = (containerWidth - slideWidth) / 2;
     const translateX = slideOffset - currentIndex * slideWidth;
+
+    // 位置計算の詳細をログ
+    console.log('=== updateSlides Position Debug ===');
+    console.log('Container width:', containerWidth);
+    console.log('Slide width:', slideWidth);
+    console.log('Current index:', currentIndex);
+    console.log('Slide offset (center calc):', slideOffset);
+    console.log('TranslateX:', translateX);
+    
+    // 各スライドの実際の位置を計算
+    if (prevSlide) {
+      const prevLeft = translateX + (currentIndex - 1) * slideWidth;
+      console.log('Prev slide left position:', prevLeft);
+      console.log('Prev slide visible width:', Math.max(0, Math.min(slideWidth, containerWidth - Math.max(0, -prevLeft))));
+    }
+    
+    if (activeSlide) {
+      const activeLeft = translateX + currentIndex * slideWidth;
+      console.log('Active slide left position:', activeLeft);
+      console.log('Active slide center position:', activeLeft + slideWidth/2);
+      console.log('Container center:', containerWidth/2);
+    }
+    
+    if (nextSlide) {
+      const nextLeft = translateX + (currentIndex + 1) * slideWidth;
+      console.log('Next slide left position:', nextLeft);
+      console.log('Next slide right edge:', nextLeft + slideWidth);
+      console.log('Next slide visible width:', Math.max(0, Math.min(slideWidth, containerWidth - Math.max(0, nextLeft - containerWidth))));
+    }
 
     wrapper.style.transform = 'translateX(' + translateX + 'px)';
   }
@@ -385,8 +413,8 @@ function generateEmbedCode() {
     body { overflow: hidden; }
     /* Swiperライクなスタイル */
     .swiper-like { width: 100vw; overflow: hidden; position: relative; }
-    .swiper-wrapper-like { display: flex; align-items: center; height: 100%; will-change: transform; transition: transform 3000ms ease; gap: 3vw; }
-    .swiper-slide-like { flex-shrink: 0; width: 71.43vw; /* 100vw / 1.4 ≈ 71.43vw */ display: flex; align-items: center; justify-content: center; position: relative; }
+    .swiper-wrapper-like { display: flex; align-items: center; height: 100%; will-change: transform; transition: transform 3000ms ease; gap: 0; }
+    .swiper-slide-like { flex-shrink: 0; width: 71.43vw; /* 100vw / 1.4 ≈ 71.43vw */ display: flex; align-items: center; justify-content: center; position: relative; margin: 0 1.5vw; }
     .swiper-slide-like img { 
       width: 100%; 
       height: auto; 
@@ -421,7 +449,7 @@ ${duplicatesHtml}
       const wrapper = document.querySelector('.swiper-wrapper-like');
       const slides = Array.from(document.querySelectorAll('.swiper-slide-like'));
       const originalCount = ${originalCount};
-      const slideWidth = wrapper.parentElement.clientWidth / 1.4 + (3 * wrapper.parentElement.clientWidth / 100); // スライド幅 + gap(3vw)
+      const slideWidth = wrapper.parentElement.clientWidth / 1.4 + (3 * wrapper.parentElement.clientWidth) / 100; // スライド幅 + margin(1.5vw * 2) // スライド幅
       let currentIndex = originalCount; // 真ん中のグループから開始
       let isAnimating = false;
       
