@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>横並びのカルーセル</title>
+    <meta
+      name="description"
+      content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。"
+    />
+
+    <!-- OGP Settings -->
+    <meta property="og:title" content="ループスライダー" />
+    <meta
+      property="og:description"
+      content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。"
+    />
+    <meta property="og:url" content="https://hiroho-t.github.io/loop-slider/circle" />
+    <meta property="og:site_name" content="ループスライダー" />
+    <meta property="og:locale" content="ja_JP" />
+    <meta name="twitter:image" content="https://hiroho-t.github.io/loop-slider/public/ogp.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="ループスライダー" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Card Settings -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ループスライダー" />
+    <meta
+      name="twitter:description"
+      content="ループアニメーションの埋め込みコードを作成するツール。画像URLから簡単にカルーセルスライダーを生成できます。"
+    />
+    <meta name="twitter:image" content="https://hiroho-t.github.io/loop-slider/ogp.png" />
+
+    <!-- Icons -->
+    <link rel="icon" href="public/favicon.png" />
+    <link rel="apple-touch-icon" href="public/favicon.png" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="single-slide-show.css" />
+    <link rel="stylesheet" href="zoom.css" />
+    <!-- Swiper (for compatibility with sample.html; not strictly required) -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-nav">
+          <h1 class="header-title">
+            <a href="https://hiroho-t.github.io/loop-slider/zoom" class="header-link"
+              >横並びのカルーセル</a
+            >
+          </h1>
+          <button
+            id="menuToggle"
+            class="menu-button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="drawer"
+          >
+            アニメーション一覧
+          </button>
+        </div>
+        <div class="header-content">
+          <p class="header-tagline">ループアニメーションの「埋め込みコード」を作成</p>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="main">
+        <div class="main-content">
+          <div class="form-section">
+            <!-- Image URL Input Area -->
+            <div class="image-url-area">
+              <div class="url-input-section">
+                <form class="url-form-container">
+                  <div class="text-field">
+                    <div class="input-container">
+                      <input
+                        aria-invalid="false"
+                        id="imageUrlInput"
+                        placeholder="https://example.com/image.jpg"
+                        type="text"
+                        aria-label="画像URL入力欄"
+                        class="input"
+                      />
+                    </div>
+                  </div>
+                  <button class="button" type="button" id="addImageBtn" aria-label="画像を追加">
+                    画像を追加
+                  </button>
+                </form>
+                <div class="url-info">
+                  <p>3~6枚まで追加可能です</p>
+                </div>
+              </div>
+              <div id="imageList" class="image-list"></div>
+              <div id="errorMessage" class="error-message"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Preview Container -->
+        <div class="carousel-container" id="carouselContainer" style="display: none">
+          <div class="carousel-wrapper">
+            <div class="rotation-preview" id="rotationPreview"></div>
+          </div>
+        </div>
+
+        <!-- Embed Section -->
+        <div class="embed-section" id="embedSection" style="display: none">
+          <div class="embed-container">
+            <div class="embed-title">📋 iframe埋め込みコード</div>
+            <div class="embed-code" id="embedCode"></div>
+            <button class="copy-btn" id="copyBtn" onclick="copyEmbedCode()">コードをコピー</button>
+          </div>
+        </div>
+      </main>
+
+      <!-- Right Drawer -->
+      <div id="drawerOverlay" class="drawer-overlay" hidden></div>
+      <nav id="drawer" class="drawer" aria-hidden="true">
+        <div class="drawer-header">
+          <span class="drawer-title">アニメーション一覧</span>
+          <button id="drawerClose" class="drawer-close" aria-label="閉じる">×</button>
+        </div>
+        <ul class="drawer-list">
+          <li class="drawer-item"><a href="index.html">ループスライダー</a></li>
+          <li class="drawer-item"><a href="circle.html">回転アニメーション</a></li>
+          <li class="drawer-item"><a href="single-slide-show.html">1枚のスライドショー</a></li>
+          <li class="drawer-item"><a href="line.html">線形アニメーション</a></li>
+        </ul>
+      </nav>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="footer-links">
+          <a
+            class="footer-link"
+            href="https://www.amazon.co.jp/%E7%9F%A5%E8%AD%98%E3%82%BC%E3%83%AD%E3%81%8B%E3%82%89%E3%83%8E%E3%83%BC%E3%82%B3%E3%83%BC%E3%83%89%E3%81%A7%E3%81%AF%E3%81%98%E3%82%81%E3%82%8B-Studio-Web%E3%82%B5%E3%82%A4%E3%83%88%E5%88%B6%E4%BD%9C%E5%85%A5%E9%96%80-gaz/dp/4295021423?__mk_ja_JP=%E3%82%AB%E3%82%BF%E3%82%AB%E3%83%8A&crid=B05BIL4A3K5Y&dib=eyJ2IjoiMSJ9.Di4YFTeCd7X1_ai6LUVxHlSzM2WIG3znUgQQlhSB7uSBxZd_bMFfD2gwzmjiyuL2zIRfqlzFYkVBHEVJu3LCgUkks4tQMmC6u6o6JAD8WwRJ6gg732y2sp15VWeJZ1VA9QsREUufCG4yC39YgptBGQ.d0dWJsp2PUqulnykx5sXE9ckxQOMiBVGIHquh9WZKKw&dib_tag=se&keywords=studio+%E3%82%B5%E3%82%A4%E3%83%88&qid=1755904612&sprefix=studio+%E3%82%B5%E3%82%A4%E3%83%88,aps,195&sr=8-2&linkCode=sl1&tag=hirohot-22&linkId=098b3a2435d15dadef603d8240892b9b&language=ja_JP&ref_=as_li_ss_tl"
+            target="_blank"
+            rel="noopener noreferrer"
+            >おすすめのStudio入門書</a
+          >
+          <a
+            class="footer-link"
+            href="https://startwith.studio.site/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >運営会社</a
+          >
+        </div>
+        <p class="footer-copyright">© StartWith Inc.</p>
+      </footer>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Swiper (matching sample.html CDN) -->
+    <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+    <script src="zoom.js"></script>
+  </body>
+</html>
