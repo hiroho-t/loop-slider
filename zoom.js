@@ -334,7 +334,6 @@ ${duplicatesHtml}
   
   // 1秒後にCSSトランジションを有効化
   setTimeout(() => {
-    console.log('🎨 [Preview] Enabling transitions for', rotationPreview.querySelectorAll('.swiper-slide-like img').length, 'images');
     const allImages = rotationPreview.querySelectorAll('.swiper-slide-like img');
     allImages.forEach(img => {
       img.style.transition = 'transform 3000ms ease';
@@ -347,7 +346,6 @@ ${duplicatesHtml}
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) {
       // タブが再表示された時に、トランジションを再設定
-      console.log('🔄 [Preview] Tab visible again - checking transitions');
       setTimeout(() => {
         const allImages = rotationPreview.querySelectorAll('.swiper-slide-like img');
         let needsReactivation = false;
@@ -355,13 +353,11 @@ ${duplicatesHtml}
         allImages.forEach(img => {
           const currentTransition = window.getComputedStyle(img).transition;
           if (!currentTransition.includes('transform') || currentTransition === 'all 0s ease 0s') {
-            console.log('⚠️ [Preview] Found image without transition, reactivating');
             needsReactivation = true;
           }
         });
         
         if (needsReactivation) {
-          console.log('🔧 [Preview] Reactivating transitions for', allImages.length, 'images');
           allImages.forEach(img => {
             img.style.transition = 'transform 3000ms ease';
           });
@@ -608,7 +604,6 @@ ${duplicatesHtml}
         // 1秒後にCSSトランジションを有効化して滑らかなアニメーション開始
         setTimeout(function() {
           const allImages = document.querySelectorAll('.swiper-slide-like img');
-          console.log('🎨 [iframe] Enabling transitions for', allImages.length, 'images');
           
           allImages.forEach(function(img, index) {
             img.style.transition = 'transform 3000ms ease';
@@ -628,7 +623,6 @@ ${duplicatesHtml}
       document.addEventListener('visibilitychange', function() {
         if (!document.hidden && isInitialized) {
           // タブが再表示された時に、トランジションを再設定
-          console.log('🔄 [iframe] Tab visible again - checking transitions');
           setTimeout(function() {
             const allImages = document.querySelectorAll('.swiper-slide-like img');
             let needsReactivation = false;
@@ -636,13 +630,11 @@ ${duplicatesHtml}
             allImages.forEach(function(img) {
               const currentTransition = window.getComputedStyle(img).transition;
               if (!currentTransition.includes('transform') || currentTransition === 'all 0s ease 0s') {
-                console.log('⚠️ [iframe] Found image without transition, reactivating');
                 needsReactivation = true;
               }
             });
             
             if (needsReactivation) {
-              console.log('🔧 [iframe] Reactivating transitions for', allImages.length, 'images');
               allImages.forEach(function(img) {
                 img.style.transition = 'transform 3000ms ease';
               });
