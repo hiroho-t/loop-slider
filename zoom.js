@@ -249,8 +249,6 @@ ${duplicatesHtml}
     
     // コンテナ幅が0の場合は処理を停止
     if (containerWidth === 0) {
-      console.warn('⚠️ Container width is 0! Skipping slide update to prevent positioning errors.');
-      console.log('Current index:', currentIndex, 'Slides count:', slides.length);
       return;
     }
     
@@ -260,7 +258,6 @@ ${duplicatesHtml}
     // アニメーション制御
     if (!animate) {
       // 初期表示時：transitionを無効化して瞬間的に位置設定
-      console.log('🎬 INITIAL POSITIONING (no animation)');
       wrapper.style.transition = 'none';
       wrapper.style.transform = 'translateX(' + translateX + 'px)';
       
@@ -273,35 +270,6 @@ ${duplicatesHtml}
       wrapper.style.transform = 'translateX(' + translateX + 'px)';
     }
 
-    // 位置計算の詳細をログ
-    console.log('=== updateSlides Position Debug ===');
-    console.log('Animation mode:', animate ? 'ANIMATED' : 'INSTANT');
-    console.log('Container width:', containerWidth);
-    console.log('Slide width:', slideWidth);
-    console.log('Current index:', currentIndex);
-    console.log('Slide offset (center calc):', slideOffset);
-    console.log('TranslateX:', translateX);
-    
-    // 各スライドの実際の位置を計算
-    if (prevSlide) {
-      const prevLeft = translateX + (currentIndex - 1) * slideWidth;
-      console.log('Prev slide left position:', prevLeft);
-      console.log('Prev slide visible width:', Math.max(0, Math.min(slideWidth, containerWidth - Math.max(0, -prevLeft))));
-    }
-    
-    if (activeSlide) {
-      const activeLeft = translateX + currentIndex * slideWidth;
-      console.log('Active slide left position:', activeLeft);
-      console.log('Active slide center position:', activeLeft + slideWidth/2);
-      console.log('Container center:', containerWidth/2);
-    }
-    
-    if (nextSlide) {
-      const nextLeft = translateX + (currentIndex + 1) * slideWidth;
-      console.log('Next slide left position:', nextLeft);
-      console.log('Next slide right edge:', nextLeft + slideWidth);
-      console.log('Next slide visible width:', Math.max(0, Math.min(slideWidth, containerWidth - Math.max(0, nextLeft - containerWidth))));
-    }
   }
 
   function nextSlide() {
@@ -310,26 +278,11 @@ ${duplicatesHtml}
     // コンテナ幅チェック - 0の場合はスキップ
     const containerWidth = wrapper.parentElement.clientWidth;
     if (containerWidth === 0) {
-      console.warn('⚠️ Container width is 0! Skipping slide transition to prevent errors.');
       return;
     }
     
     isAnimating = true;
-
-    console.log('--- Next slide triggered ---');
-    console.log('Current index before increment:', currentIndex);
-    console.log('Total slides count:', slides.length);
-    console.log('Original count:', originalCount);
-
     currentIndex++;
-    console.log('Current index after increment:', currentIndex);
-    
-    // 現在アクティブになる予定のスライドの状態を確認
-    const nextActiveSlide = slides[currentIndex];
-    if (nextActiveSlide && nextActiveSlide.querySelector('img')) {
-      const nextTransform = window.getComputedStyle(nextActiveSlide.querySelector('img')).transform;
-      console.log('Next active slide transform before updateSlides:', nextTransform);
-    }
 
     if (currentIndex >= originalCount * 2) {
       updateSlides(true);
@@ -337,21 +290,8 @@ ${duplicatesHtml}
         // ループ拡張前にも幅をチェック
         const extendContainerWidth = wrapper.parentElement.clientWidth;
         if (extendContainerWidth === 0) {
-          console.warn('⚠️ Container width is 0 during loop extension! Deferring extension.');
           isAnimating = false;
           return;
-        }
-        
-        console.log('=== LOOP EXTENSION START ===');
-        console.log('Current index before extension:', currentIndex);
-        console.log('Current slides count before extension:', slides.length);
-        
-        // 現在アクティブな画像の状態をログ
-        const currentActive = slides.find(slide => slide.classList.contains('swiper-slide-active'));
-        if (currentActive && currentActive.querySelector('img')) {
-          const currentTransform = window.getComputedStyle(currentActive.querySelector('img')).transform;
-          console.log('Current active image transform before extension:', currentTransform);
-          console.log('Current active slide classes:', currentActive.className);
         }
         
         // 新しいアプローチ：リセットせずにDOMを動的に拡張
@@ -370,30 +310,16 @@ ${duplicatesHtml}
             return slideDiv;
           });
         
-        console.log('Adding', newSlides.length, 'new slides');
-        
         // 新しいスライドをwrapperの最後に追加
         newSlides.forEach((slide, index) => {
           wrapper.appendChild(slide);
-          console.log('Added slide', index + 1, 'with image src:', slide.querySelector('img').src);
         });
         
         // slides配列を更新
         slides = Array.from(wrapper.querySelectorAll('.swiper-slide-like'));
-        console.log('Extended slides count:', slides.length);
-        
-        // 現在アクティブな画像の状態を再確認
-        const activeAfter = slides.find(slide => slide.classList.contains('swiper-slide-active'));
-        if (activeAfter && activeAfter.querySelector('img')) {
-          const afterTransform = window.getComputedStyle(activeAfter.querySelector('img')).transform;
-          console.log('Active image transform after extension:', afterTransform);
-          console.log('Active slide classes after extension:', activeAfter.className);
-        }
         
         // 現在のインデックスはそのまま、アニメーション続行
         isAnimating = false;
-        console.log('Current index after extension:', currentIndex);
-        console.log('=== LOOP EXTENSION END ===');
       }, 3000);
     } else {
       updateSlides(true);
@@ -403,31 +329,46 @@ ${duplicatesHtml}
     }
   }
 
-  // Start preview with initial state logging
-  console.log('=== INITIAL SETUP ===');
-  console.log('Total uploaded images:', originalCount);
-  console.log('Initial currentIndex (should start at originalCount):', currentIndex);
-  console.log('Total slides created:', slides.length);
-  console.log('Expected structure: duplicates(' + originalCount + ') + originals(' + originalCount + ') + duplicates(' + originalCount + ')');
-  
   // 初期位置を瞬間設定（アニメーションなし）
   updateSlides(false);
   
   // 1秒後にCSSトランジションを有効化
   setTimeout(() => {
-    console.log('🎨 Enabling CSS transitions for smooth animations');
+    console.log('🎨 [Preview] Enabling transitions for', rotationPreview.querySelectorAll('.swiper-slide-like img').length, 'images');
     const allImages = rotationPreview.querySelectorAll('.swiper-slide-like img');
     allImages.forEach(img => {
       img.style.transition = 'transform 3000ms ease';
     });
   }, 1000);
   
-  console.log('=== FIRST ANIMATION START (after 3s delay) ===');
-  setTimeout(() => {
-    console.log('About to start automatic slide progression...');
-  }, 2900);
-  
   setInterval(nextSlide, 3000);
+
+  // Handle visibility change (tab switching)
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      // タブが再表示された時に、トランジションを再設定
+      console.log('🔄 [Preview] Tab visible again - checking transitions');
+      setTimeout(() => {
+        const allImages = rotationPreview.querySelectorAll('.swiper-slide-like img');
+        let needsReactivation = false;
+        
+        allImages.forEach(img => {
+          const currentTransition = window.getComputedStyle(img).transition;
+          if (!currentTransition.includes('transform') || currentTransition === 'all 0s ease 0s') {
+            console.log('⚠️ [Preview] Found image without transition, reactivating');
+            needsReactivation = true;
+          }
+        });
+        
+        if (needsReactivation) {
+          console.log('🔧 [Preview] Reactivating transitions for', allImages.length, 'images');
+          allImages.forEach(img => {
+            img.style.transition = 'transform 3000ms ease';
+          });
+        }
+      }, 100);
+    }
+  });
 
   // Handle resize
   window.addEventListener('resize', function () {
@@ -546,7 +487,6 @@ ${duplicatesHtml}
         
         // コンテナ幅チェック
         if (containerWidth === 0) {
-          console.warn('⚠️ [iframe] Container width is 0! Skipping update.');
           return;
         }
         
@@ -575,13 +515,10 @@ ${duplicatesHtml}
         // コンテナ幅チェック
         const containerWidth = wrapper.parentElement.clientWidth;
         if (containerWidth === 0) {
-          console.warn('⚠️ [iframe] Container width is 0! Skipping slide transition.');
           return;
         }
         
         isAnimating = true;
-        console.log('➡️ [iframe] nextSlide() - currentIndex:', currentIndex, 'of', slides.length);
-        
         currentIndex++;
         
         // シームレスループ：動的拡張システム（プレビューと同じ方式）
@@ -591,21 +528,8 @@ ${duplicatesHtml}
             // ループ拡張前にも幅をチェック
             const extendContainerWidth = wrapper.parentElement.clientWidth;
             if (extendContainerWidth === 0) {
-              console.warn('⚠️ [iframe] Container width is 0 during loop extension! Deferring extension.');
               isAnimating = false;
               return;
-            }
-            
-            console.log('=== [iframe] LOOP EXTENSION START ===');
-            console.log('Current index before extension:', currentIndex);
-            console.log('Current slides count before extension:', slides.length);
-            
-            // 現在アクティブな画像の状態をログ
-            const currentActive = slides.find(slide => slide.classList.contains('swiper-slide-active'));
-            if (currentActive && currentActive.querySelector('img')) {
-              const currentTransform = window.getComputedStyle(currentActive.querySelector('img')).transform;
-              console.log('Current active image transform before extension:', currentTransform);
-              console.log('Current active slide classes:', currentActive.className);
             }
             
             // 新しいアプローチ：リセットせずにDOMを動的に拡張
@@ -626,30 +550,16 @@ ${duplicatesHtml}
               newSlides.push(slideDiv);
             });
             
-            console.log('Adding', newSlides.length, 'new slides');
-            
             // 新しいスライドをwrapperの最後に追加
             newSlides.forEach(function(slide, index) {
               wrapper.appendChild(slide);
-              console.log('Added slide', index + 1, 'with image src:', slide.querySelector('img').src);
             });
             
             // slides配列を更新
             slides = Array.from(wrapper.querySelectorAll('.swiper-slide-like'));
-            console.log('Extended slides count:', slides.length);
-            
-            // 現在アクティブな画像の状態を再確認
-            const activeAfter = slides.find(slide => slide.classList.contains('swiper-slide-active'));
-            if (activeAfter && activeAfter.querySelector('img')) {
-              const afterTransform = window.getComputedStyle(activeAfter.querySelector('img')).transform;
-              console.log('Active image transform after extension:', afterTransform);
-              console.log('Active slide classes after extension:', activeAfter.className);
-            }
             
             // 現在のインデックスはそのまま、アニメーション続行
             isAnimating = false;
-            console.log('Current index after extension:', currentIndex);
-            console.log('=== [iframe] LOOP EXTENSION END ===');
           }, 3000);
         } else {
           updateSlides(true);
@@ -665,16 +575,12 @@ ${duplicatesHtml}
       // 初期化とリサイズ対応を改善
       function initializeSlider() {
         if (isInitialized) {
-          console.log('⚠️ [iframe] initializeSlider already called, skipping...');
           return;
         }
-        
-        console.log('🎬 [iframe] Starting initialization...');
         
         // コンテナサイズが正しく取得できるまで待機
         const containerWidth = wrapper.parentElement.clientWidth;
         if (containerWidth === 0) {
-          console.log('⏳ [iframe] Container width is 0, retrying in 100ms...');
           // サイズが0の場合は少し待ってから再試行
           setTimeout(initializeSlider, 100);
           return;
@@ -682,126 +588,75 @@ ${duplicatesHtml}
         
         // スライド幅を設定（初回のみ）
         slideWidth = containerWidth / 1.4 + (3 * containerWidth) / 100;
-        console.log('📏 [iframe] Set slide width:', slideWidth);
         
         // 初期コンテナ幅を固定値として保存
         fixedContainerWidth = containerWidth;
-        console.log('🔒 [iframe] Fixed container width for consistent calculations:', fixedContainerWidth);
         
         // Wrapperを完全にリセットしてから初期配置
-        console.log('🔄 [iframe] Resetting wrapper before initial positioning...');
         wrapper.style.transition = 'none';
         wrapper.style.transform = 'translateX(0px)';
-        console.log('🔄 [iframe] Wrapper reset to zero');
         
         // 1フレーム待ってから正しい初期位置を設定
         requestAnimationFrame(function() {
-          console.log('📍 [iframe] Setting correct initial position...');
           // 初期表示（アニメーションなし） - 瞬間的に中央配置
           updateSlides(false);
         });
         
         // 初期化完了マーク
         isInitialized = true;
-        console.log('✅ [iframe] Initialization complete');
         
         // 1秒後にCSSトランジションを有効化して滑らかなアニメーション開始
         setTimeout(function() {
-          console.log('🎨 [iframe] Enabling CSS transitions for smooth animations');
-          console.log('🎨 [iframe] Container width at transition enable:', wrapper.parentElement.clientWidth);
-          
           const allImages = document.querySelectorAll('.swiper-slide-like img');
-          console.log('🎨 [iframe] Found', allImages.length, 'images to enable transitions');
+          console.log('🎨 [iframe] Enabling transitions for', allImages.length, 'images');
           
           allImages.forEach(function(img, index) {
-            const currentTransform = window.getComputedStyle(img).transform;
-            console.log('🎨 [iframe] Image', index + 1, 'current transform:', currentTransform);
             img.style.transition = 'transform 3000ms ease';
           });
           
           // wrapperのtransitionも有効化
-          const currentWrapperTransform = window.getComputedStyle(wrapper).transform;
-          console.log('🎨 [iframe] Wrapper current transform:', currentWrapperTransform);
           wrapper.style.transition = 'transform 3000ms ease';
-          
-          console.log('✅ [iframe] All transitions enabled successfully');
         }, 1000);
         
         // 自動再生開始
         if (!window.sliderInterval) {
-          console.log('⏰ [iframe] Setting up auto-play to start in 3 seconds...');
           window.sliderInterval = setInterval(nextSlide, 3000);
-          console.log('⏰ [iframe] Auto-play interval created');
-          
-          // 3秒後のタイミングも明確にログ
-          setTimeout(function() {
-            console.log('🎬 [iframe] First auto-slide should start NOW (after 3s delay)');
-          }, 2900);
         }
       }
+      
+      // Handle visibility change (tab switching) for iframe
+      document.addEventListener('visibilitychange', function() {
+        if (!document.hidden && isInitialized) {
+          // タブが再表示された時に、トランジションを再設定
+          console.log('🔄 [iframe] Tab visible again - checking transitions');
+          setTimeout(function() {
+            const allImages = document.querySelectorAll('.swiper-slide-like img');
+            let needsReactivation = false;
+            
+            allImages.forEach(function(img) {
+              const currentTransition = window.getComputedStyle(img).transition;
+              if (!currentTransition.includes('transform') || currentTransition === 'all 0s ease 0s') {
+                console.log('⚠️ [iframe] Found image without transition, reactivating');
+                needsReactivation = true;
+              }
+            });
+            
+            if (needsReactivation) {
+              console.log('🔧 [iframe] Reactivating transitions for', allImages.length, 'images');
+              allImages.forEach(function(img) {
+                img.style.transition = 'transform 3000ms ease';
+              });
+              
+              // wrapperのtransitionも再設定
+              wrapper.style.transition = 'transform 3000ms ease';
+            }
+          }, 100);
+        }
+      });
       
       // 初期化
       initializeSlider();
       
-      // リサイズ対応（一時的に無効化してテスト）
-      console.log('🚫 [iframe] Window resize listener temporarily disabled for testing');
-      
-      /* 
-      let resizeTimeout;
-      window.addEventListener('resize', function() {
-        console.log('🔄 [iframe] Resize detected');
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(function() {
-          if (isInitialized) {
-            console.log('🔄 [iframe] Handling resize...');
-            const newContainerWidth = wrapper.parentElement.clientWidth;
-            const newSlideWidth = newContainerWidth / 1.4 + (3 * newContainerWidth) / 100;
-            
-            // 幅が大きく変わった場合のみ更新（ただしアニメーション中は無視）
-            if (Math.abs(newSlideWidth - slideWidth) > 50) {
-              if (!isAnimating) {
-                console.log('📏 [iframe] Slide width changed:', slideWidth, '->', newSlideWidth);
-                slideWidth = newSlideWidth;
-                updateSlides(false); // 瞬間的に再配置
-              } else {
-                console.log('⏸️ [iframe] Slide width change ignored during animation');
-              }
-            }
-          }
-        }, 300);
-      });
-      */
-      
-      // MutationObserver でサイズ変更を監視（iframeサイズ変更対応）
-      // 一時的にResizeObserverを無効化してテスト
-      console.log('🚫 [iframe] ResizeObserver temporarily disabled for testing');
-      
-      /* 
-      if (window.ResizeObserver) {
-        const resizeObserver = new ResizeObserver(function(entries) {
-          if (!isInitialized) return;
-          
-          console.log('👁️ [iframe] ResizeObserver triggered');
-          clearTimeout(resizeTimeout);
-          resizeTimeout = setTimeout(function() {
-            const newContainerWidth = wrapper.parentElement.clientWidth;
-            const newSlideWidth = newContainerWidth / 1.4 + (3 * newContainerWidth) / 100;
-            
-            // 幅が大きく変わった場合のみ更新（ただしアニメーション中は無視）
-            if (Math.abs(newSlideWidth - slideWidth) > 50) {
-              if (!isAnimating) {
-                console.log('📏 [iframe] ResizeObserver - Slide width changed:', slideWidth, '->', newSlideWidth);
-                slideWidth = newSlideWidth;
-                updateSlides(false); // 瞬間的に再配置
-              } else {
-                console.log('⏸️ [iframe] ResizeObserver - Slide width change ignored during animation');
-              }
-            }
-          }, 300);
-        });
-        resizeObserver.observe(wrapper.parentElement);
-      }
-      */
       } // initSlider function end
     })();
 </script>
